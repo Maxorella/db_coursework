@@ -1,0 +1,43 @@
+/* Общий стиль для страницы */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Центрирование контейнера */
+.center-container {
+    text-align: center;
+    background: #ffffff;
+    padding: 20px 40px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Заголовок */
+.center-container h2 {
+    color: #cc0000; /* Красный цвет для акцента */
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+/* Кнопка-ссылка */
+.center-container .button {
+    display: inline-block;
+    padding: 10px 20px;
+    color: #ffffff;
+    background-color: #007bff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.center-container .button:hover {
+    background-color: #0056b3;
+}

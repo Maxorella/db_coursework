@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='/internal/auth/static/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        {% if message %}
+            <div class="message">
+                <p>{{ message }}</p>
+            </div>
+        {% endif %}
+
+        <h1>Введите логин и пароль</h1>
+        <form action="" method="post">
+            <input type="text" name="login" placeholder="Логин" required> <br>
+            <input type="password" name="password" placeholder="Пароль" required> <br>
+            <input type="submit" value="Войти"> <br>
+        </form>
+    </div>
+</body>
+</html>
