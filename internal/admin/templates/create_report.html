@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выбор отчета</title>
+    <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <div class="container">
+        {% if message %}
+            <div class="message">
+                <p>{{ message }}</p>
+            </div>
+        {% endif %}
+        <h1>Выбор типа отчета</h1>
+        <form action="{{ url_for('admin_bp.generate_report') }}" method="POST">
+            <!-- Выбор типа отчета -->
+            <label for="report_type">Тип отчета:</label>
+            <select id="report_type" name="report_type" required>
+                <option value="exceed_report">Общий отчет о превышениях</option>
+                <option value="paid_exceed_report">Отчет об оплаченных превышениях</option>
+                <option value="unpaid_exceed_report">Отчет о неоплаченных превышениях</option>
+            </select><br><br>
+
+            <!-- Указание месяца и года -->
+            <label for="report_year">Год:</label>
+            <input type="number" id="report_year" name="report_year" required><br><br>
+
+            <label for="report_month">Месяц:</label>
+            <input type="number" id="report_month" name="report_month" required min="1" max="12"><br><br>
+
+            <button type="submit">Сформировать отчет</button>
+        </form>
+    </div>
+</body>
+</html>

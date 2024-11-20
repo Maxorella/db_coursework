@@ -21,7 +21,7 @@ def group_required(func):
             if user_role in access and user_bp in access[user_role]:
                 return func(*args, **kwargs)
             else:
-                return 'У вас нет прав'
+                return redirect(url_for('no_access_handler'))
         else:
-            return redirect(url_for('main_menu'))
+            return redirect(url_for('main_menu_handler'))
     return wrapper

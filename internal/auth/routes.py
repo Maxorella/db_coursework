@@ -22,7 +22,7 @@ def auth_handler():
 
     if request.method == 'GET': # если пользователь уже зареган - редирект на меню
         if 'user_id' in session:
-            return redirect(url_for('', ))
+            return redirect(url_for('main_menu_handler', message=f'Вы уже авторизованы, как {session.get("user_group")}' ))
 
         message = request.args.get('message') # если не зареган - страничка авторизации
         if message is None:
