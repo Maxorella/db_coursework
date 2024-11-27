@@ -32,9 +32,7 @@ def staff_query_result_handler():
 
 
     staff_info, staff_exceed, err_mes = staff_exceed_route(staff_id, current_app.config['db_config'], provider)
-    print(staff_info)
 
-    print(staff_exceed)
     # staff_info ([staff_id, user_group, surname, position, hire_date, department_id])
     # staff_exceed ([phone, exceed_amount, exceed_month, exceed_year, repayment_date(always NULL) ], ...)
     if err_mes != '':

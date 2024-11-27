@@ -40,5 +40,5 @@ def staff_exceed_route(staff_id, db_config, sql_provider):
 
     staff_exceed, err_mes = fetch_staff_exceed(staff_id, db_config, sql_provider)
     if err_mes != '':
-        return None, None, "Ошибка во время получения информации о задолжностях сотрудника!"
+        return None, None, "Ошибка во время получения информации о задолженностях сотрудника!"
     return staff_info, staff_exceed, err_mes
