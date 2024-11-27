@@ -1,7 +1,7 @@
 
 # функции связанные с выполнением запроса в базу данных
 
-from internal.database.DBcm import DBContextManager
+from database.DBcm import DBContextManager
 
 def select_catergory(db_config: dict, _sql: str):
     result, schema = '', ''

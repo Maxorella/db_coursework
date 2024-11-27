@@ -1,12 +1,8 @@
-import json
-
-from flask import Blueprint, request, render_template, flash, redirect, session, url_for, current_app
+from flask import Blueprint, request, render_template, redirect, session, url_for, current_app
 import os
 
-from internal.auth.select import select_user
-from internal.database.sql_provider import SQLProvider
-
-from internal.database.DBcm import DBContextManager
+from auth.select import select_user
+from database.sql_provider import SQLProvider
 
 auth_blueprint = Blueprint(
     'auth_bp',

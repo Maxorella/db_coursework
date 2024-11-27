@@ -15,5 +15,3 @@ flow:
 	docker-compose down -v
 	docker-compose up -d --build
 	docker exec -it db_coursework-db-1  mysql -u root
-
-connect:

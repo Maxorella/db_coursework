@@ -1,14 +1,10 @@
-import json
-
-from flask import Blueprint, request, render_template, flash, redirect, session, url_for, current_app
+from flask import Blueprint, request, render_template, flash, redirect, url_for, current_app
 import os
 
-from internal.admin.select import save_report, create_exceed_report
-from internal.auth.select import select_user
-from internal.database.sql_provider import SQLProvider
+from admin.select import save_report, create_exceed_report
+from database.sql_provider import SQLProvider
 
-from internal.database.DBcm import DBContextManager
-from internal.utils.access import group_required
+from utils.access import group_required
 
 admin_blueprint = Blueprint(
     'admin_bp',
@@ -54,7 +50,7 @@ def admin_report_handler():
             return redirect(url_for('admin_bp.admin_report_handler', message='Произошла ошибка при добавлении!'))
         print(f"Ошибка: {err}")
         flash(f"Данные для телефона {phone_number} на сумму {amount} успешно добавлены за {report_month}/{report_year}!")
-        return redirect(url_for('admin_bp.admin_report_handler', message =f'данные о телефоне {phone_number} за {report_month}/{report_year} добавлены'))
+        return redirect(url_for('admin_bp.admin_report_handler', message=f'данные о телефоне {phone_number} за {report_month}/{report_year} добавлены'))
 
 
 
@@ -75,15 +71,13 @@ def generate_report_handler():
     elif report_type == 'paid_exceed_report':
         # Логика для отчета об оплаченных превышениях
         sql = provider.get('paid_exceed_report.sql', year=report_year, month=report_month) # запрос (sql)
-    elif report_type == 'unpaid_exceed_report':
-        # Логика для отчета о неоплаченных превышениях
-        sql = provider.get('unpaid_exceed_report.sql', year=report_year, month=report_month) # запрос (sql)
     else:
         flash('Неизвестный тип отчета!', 'error')
 
 
     schema, result, err = create_exceed_report(conf, sql)
-
+    if err != '':
+        return redirect(url_for('admin_bp.choose_report', message='Произошла ошибка!'))
 
     return redirect(url_for('admin_bp.choose_report'))
 

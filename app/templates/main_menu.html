@@ -19,7 +19,7 @@
                 <li><a href="">Просмотр/Оплата превышения лимита</a></li>
                 <li><a href="">Просмотр отчета</a></li>
                 <li><a href="{{ url_for('admin_bp.admin_report_handler') }}">Создание отчета(админ)</a></li>
-                <li><a href="">Запросы</a></li>
+                <li><a href="{{ url_for('query_bp.staff_query_handler') }}">Запросы</a></li>
                 <li><a href="{{ url_for('exit_handler') }}">Выход</a></li>
             </ul>
         </nav>

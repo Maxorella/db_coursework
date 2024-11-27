@@ -1,4 +1,4 @@
-from internal.database.DBcm import DBContextManager
+from database.DBcm import DBContextManager
 
 def save_report(db_config: dict, _sql: str):
     result, schema, err = '', '', ''

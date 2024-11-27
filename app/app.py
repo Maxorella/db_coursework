@@ -1,17 +1,15 @@
 import json
 import os
-from functools import wraps
 
-from flask import Flask, render_template, request
+from flask import Flask
 
-from internal.admin.routes import admin_blueprint
-from internal.database.sql_provider import SQLProvider
+from admin.routes import admin_blueprint
+from database.sql_provider import SQLProvider
 # from internal.dashboard.routes import dashboard_blueprint
-from internal.database.select import select_catergory
-from internal.auth.routes import auth_blueprint
-from flask import Blueprint, request, render_template, flash, redirect, session, url_for
+from auth.routes import auth_blueprint
+from query.routes import query_blueprint
 
-from internal.utils.access import login_required
+from flask import request, render_template, session
 
 app = Flask(__name__)
 app.secret_key = 'super secret key'
@@ -24,6 +22,7 @@ provider = SQLProvider(os.path.join(os.path.dirname(__file__), 'sql'))
 
 app.register_blueprint(auth_blueprint, url_prefix='/auth')
 app.register_blueprint(admin_blueprint, url_prefix='/admin')
+app.register_blueprint(query_blueprint, url_prefix='/query')
 
 # app.register_blueprint(dashboard_blueprint, url_prefix='/dashboard')
 

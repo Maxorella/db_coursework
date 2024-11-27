@@ -1,7 +1,5 @@
 {
-  "сотрудник": ["auth_bp", "query_bp"],
+  "сотрудник": ["auth_bp"],
   "руководство": ["auth_bp", "query_bp"],
-  "админ": ["auth_bp", "admin_bp"],
-  "оператор": ["auth_bp"],
-  "сотрудник банка": ["auth_bp"]
+  "админ": ["auth_bp", "admin_bp"]
 }

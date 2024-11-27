@@ -2,7 +2,7 @@ CREATE DATABASE sot_svyaz;
 USE sot_svyaz;
 
 
-DROP  TABLE IF EXISTS stuff;
+DROP  TABLE IF EXISTS staff;
 DROP  TABLE IF EXISTS bcc;
 DROP  TABLE IF EXISTS invoice;
 DROP  TABLE IF EXISTS invoice_line;
@@ -14,31 +14,31 @@ DROP  TABLE IF EXISTS user;
 CREATE TABLE IF NOT EXISTS user (
     user_id INT NOT NULL AUTO_INCREMENT,
     login VARCHAR(255) NOT NULL UNIQUE,
-    user_group ENUM('сотрудник', 'руководство', 'админ', 'оператор', 'сотрудник банка') NOT NULL,
+    user_group ENUM('сотрудник', 'руководство', 'админ') NOT NULL,
     password VARCHAR(255) NOT NULL,
     PRIMARY KEY (user_id)
 );
 
 
-CREATE TABLE IF NOT EXISTS stuff (
-    stuff_id INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS staff (
+    staff_id INT NOT NULL AUTO_INCREMENT,
     surname VARCHAR(100) NOT NULL,
     address VARCHAR(255),
     birthday DATE,
     position VARCHAR(100),
     hire_date DATE,
     department_id INT,
-    PRIMARY KEY (stuff_id),
-    FOREIGN KEY (stuff_id) REFERENCES user(user_id)
+    PRIMARY KEY (staff_id),
+    FOREIGN KEY (staff_id) REFERENCES user(user_id)
 );
 
 
 CREATE TABLE IF NOT EXISTS bcc (
     phone BIGINT NOT NULL,
     money_limit DECIMAL(15,2) NOT NULL,
-    stuff_id INT,
+    staff_id INT,
     PRIMARY KEY (phone),
-    FOREIGN KEY (stuff_id) REFERENCES stuff(stuff_id)
+    FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
 );
 
 CREATE TABLE IF NOT EXISTS limit_exceed (
@@ -60,23 +60,17 @@ CREATE TABLE IF NOT EXISTS talk_sum (
     FOREIGN KEY (phone) REFERENCES bcc(phone)
 );
 
-CREATE TABLE IF NOT EXISTS report_info (
-    report_id INT NOT NULL,
-    report_month INT NOT NULL,
-    report_year INT NOT NULL
-);
-
 CREATE TABLE IF NOT EXISTS exceed_report (
     report_id INT NOT NULL,
-    stuff_id INT NOT NULL,
+    staff_id INT NOT NULL,
     total_exceed_amount DECIMAL(15,2) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (stuff_id, report_id),
-    FOREIGN KEY (stuff_id) REFERENCES stuff(stuff_id),
-    FOREIGN KEY (report_id) REFERENCES report_info(report_id)
+    report_month INT NOT NULL,
+    report_year INT NOT NULL,
+    PRIMARY KEY (staff_id, report_id),
+    FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
 );
 
-
+/*
 DELIMITER $$
 
 CREATE PROCEDURE create_exceed_report_by_employee(
@@ -101,41 +95,20 @@ BEGIN
     END IF;
 
     -- Вставляем агрегированные данные по сотрудникам в таблицу exceed_report
-    INSERT INTO exceed_report (report_id, stuff_id, total_exceed_amount)
+    INSERT INTO exceed_report (report_id, staff_id, total_exceed_amount)
     SELECT
         v_report_id,
-        s.stuff_id,
+        s.staff_id,
         SUM(le.exceed_amount) AS total_exceed_amount
     FROM
         limit_exceed le
     JOIN bcc b ON le.phone = b.phone
-    JOIN stuff s ON b.stuff_id = s.stuff_id
+    JOIN staff s ON b.staff_id = s.staff_id
     WHERE le.exceed_month = p_month AND le.exceed_year = p_year
-    GROUP BY s.stuff_id;
+    GROUP BY s.staff_id;
 END $$
 
 DELIMITER ;
-
-/*
-CREATE TABLE IF NOT EXISTS invoice (
-    invoice_number INT NOT NULL AUTO_INCREMENT,
-    issue_date DATE NOT NULL,
-    invoice_month INT NOT NULL,
-    invoice_year INT NOT NULL,
-    total_amount DECIMAL(15,2) NOT NULL,
-    PRIMARY KEY (invoice_number)
-);
-
-CREATE TABLE IF NOT EXISTS invoice_line (
-    phone BIGINT NOT NULL,
-    amount DECIMAL(15,2) NOT NULL,
-    invoice_number INT NOT NULL,
-    PRIMARY KEY (phone, invoice_number),
-    FOREIGN KEY (phone) REFERENCES bcc(phone),
-    FOREIGN KEY (invoice_number) REFERENCES invoice(invoice_number)
-);
-
- */
 
 
 DELIMITER $$
@@ -171,27 +144,7 @@ BEGIN
 END $$
 
 DELIMITER ;
-/*
-CREATE TABLE IF NOT EXISTS payment (
-    payment_number INT NOT NULL AUTO_INCREMENT,
-    creation_date DATE NOT NULL,
-    PRIMARY KEY (payment_number)
-);
-
-CREATE TABLE IF NOT EXISTS payment_line (
-    phone INT NOT NULL,
-    received_amount DECIMAL(15,2) NOT NULL,
-    payment_number INT NOT NULL,
-    payment_month INT NOT NULL,
-    payment_year INT NOT NULL,
-    PRIMARY KEY (phone, payment_number, payment_month, payment_year),
-    FOREIGN KEY (payment_number) REFERENCES payment(payment_number)
-);
 */
-
-
--- CREATE TABLE IF NOT EXISTS report (
--- );
 
 INSERT INTO user (login, user_group, password) VALUES
     ('management1', 'руководство', 'password1'),
@@ -225,7 +178,7 @@ VALUES
 
 
 -- Вставка 6 сотрудников в первый отдел (department_id = 1)
-INSERT INTO stuff (surname, address, birthday, position, hire_date, department_id)
+INSERT INTO staff (surname, address, birthday, position, hire_date, department_id)
 VALUES
     ('Иванов', 'ул. Ленина, 1', '1985-06-15', 'Менеджер', '2023-01-10', 1),
     ('Петров', 'ул. Мира, 5', '1990-04-22', 'Инженер', '2022-11-14', 1),
@@ -235,7 +188,7 @@ VALUES
     ('Захаров', 'ул. Тверская, 13', '1989-08-14', 'Маркетолог', '2021-09-10', 1);
 
 -- Вставка 4 сотрудников во второй отдел (department_id = 2)
-INSERT INTO stuff (surname, address, birthday, position, hire_date, department_id)
+INSERT INTO staff (surname, address, birthday, position, hire_date, department_id)
 VALUES
     ('Кузнецов', 'ул. Чапаева, 15', '1988-01-25', 'Аналитик', '2022-02-15', 2),
     ('Морозов', 'ул. Октябрьская, 2', '1995-10-30', 'Программист', '2023-08-05', 2),
@@ -243,7 +196,7 @@ VALUES
     ('Егорова', 'ул. Розы, 6', '1986-09-11', 'Юрист', '2021-12-15', 2);
 
 -- Вставка телефонов для сотрудников из первого отдела
-INSERT INTO bcc (phone, money_limit, stuff_id)
+INSERT INTO bcc (phone, money_limit, staff_id)
 VALUES
     (89051544123, 500.00, 1),
     (89051544124, 600.00, 1),
@@ -259,7 +212,7 @@ VALUES
     (89051544134, 550.00, 6);
 
 -- Вставка телефонов для сотрудников из второго отдела
-INSERT INTO bcc (phone, money_limit, stuff_id)
+INSERT INTO bcc (phone, money_limit, staff_id)
 VALUES
     (89051544135, 200.00, 7),
     (89051544136, 300.00, 7),
@@ -269,3 +222,25 @@ VALUES
     (89051544140, 700.00, 9),
     (89051544141, 800.00, 10),
     (89051544142, 900.00, 10);
+
+
+-- Превышение лимита для сотрудника с id=1 (Иванов, два телефона)
+INSERT INTO limit_exceed (phone, exceed_amount, exceed_month, exceed_year, repayment_date)
+VALUES
+    (89051544123, 200.00, 10, 2024, NULL), -- Превышение на телефоне 89051544123
+    (89051544124, 150.00, 10, 2024, NULL); -- Превышение на телефоне 89051544124
+
+-- Превышение лимита для сотрудника с id=2 (Петров)
+INSERT INTO limit_exceed (phone, exceed_amount, exceed_month, exceed_year, repayment_date)
+VALUES
+    (89051544125, 100.00, 10, 2024, NULL); -- Превышение на телефоне 89051544125
+
+-- Превышение лимита для сотрудника с id=3 (Сидоров)
+INSERT INTO limit_exceed (phone, exceed_amount, exceed_month, exceed_year, repayment_date)
+VALUES
+    (89051544127, 350.00, 10, 2024, NULL); -- Превышение на телефоне 89051544127
+
+-- Превышение лимита для сотрудника с id=4 (Алексеев)
+INSERT INTO limit_exceed (phone, exceed_amount, exceed_month, exceed_year, repayment_date)
+VALUES
+    (89051544129, 50.00, 10, 2024, NULL); -- Превышение на телефоне 89051544129
