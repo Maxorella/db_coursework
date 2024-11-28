@@ -57,12 +57,11 @@ CREATE TABLE IF NOT EXISTS talk_sum (
 );
 
 CREATE TABLE IF NOT EXISTS exceed_report (
-    report_id INT NOT NULL,
     staff_id INT NOT NULL,
     total_exceed_amount DECIMAL(15,2) NOT NULL,
     report_month INT NOT NULL,
     report_year INT NOT NULL,
-    PRIMARY KEY (staff_id, report_id),
+    PRIMARY KEY (staff_id, report_month, report_year),
     FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
 );
 
@@ -206,43 +205,55 @@ VALUES
 SET foreign_key_checks = 1;
 
 
-/*
 DELIMITER $$
 
-CREATE PROCEDURE create_exceed_report_by_employee(
+CREATE PROCEDURE create_or_update_exceed_report(
     IN p_month INT,
     IN p_year INT
 )
 BEGIN
-    DECLARE v_report_id INT;
+    DECLARE done INT DEFAULT 0;
+    DECLARE v_staff_id INT;
+    DECLARE v_total_exceed_amount DECIMAL(15, 2);
+    DECLARE report_cursor CURSOR FOR
+        SELECT s.staff_id, SUM(le.exceed_amount) AS total_exceed_amount
+        FROM limit_exceed le
+        JOIN bcc b ON le.phone = b.phone
+        JOIN staff s ON b.staff_id = s.staff_id
+        WHERE le.exceed_month = p_month AND le.exceed_year = p_year
+        GROUP BY s.staff_id;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
 
-    -- Проверяем, существует ли запись в report_info
-    SELECT report_id INTO v_report_id
-    FROM report_info
-    WHERE report_month = p_month AND report_year = p_year;
+    -- Открываем курсор для обработки данных
+    OPEN report_cursor;
 
-    -- Если запись не существует, добавляем новую
-    IF v_report_id IS NULL THEN
-        INSERT INTO report_info (report_month, report_year)
-        VALUES (p_month, p_year);
+    read_loop: LOOP
+        FETCH report_cursor INTO v_staff_id, v_total_exceed_amount;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
 
-        -- Получаем ID только что добавленной записи
-        SELECT LAST_INSERT_ID() INTO v_report_id;
-    END IF;
+        -- Обновляем запись, если она существует
+        IF EXISTS (
+            SELECT 1 FROM exceed_report
+            WHERE staff_id = v_staff_id
+              AND report_month = p_month
+              AND report_year = p_year
+        ) THEN
+            UPDATE exceed_report
+            SET total_exceed_amount = v_total_exceed_amount
+            WHERE staff_id = v_staff_id
+              AND report_month = p_month
+              AND report_year = p_year;
+        ELSE
+            -- Вставляем новую запись, если она не существует
+            INSERT INTO exceed_report (staff_id, total_exceed_amount, report_month, report_year)
+            VALUES (v_staff_id, v_total_exceed_amount, p_month, p_year);
+        END IF;
+    END LOOP;
 
-    -- Вставляем агрегированные данные по сотрудникам в таблицу exceed_report
-    INSERT INTO exceed_report (report_id, staff_id, total_exceed_amount)
-    SELECT
-        v_report_id,
-        s.staff_id,
-        SUM(le.exceed_amount) AS total_exceed_amount
-    FROM
-        limit_exceed le
-    JOIN bcc b ON le.phone = b.phone
-    JOIN staff s ON b.staff_id = s.staff_id
-    WHERE le.exceed_month = p_month AND le.exceed_year = p_year
-    GROUP BY s.staff_id;
-END $$
+    -- Закрываем курсор
+    CLOSE report_cursor;
+END$$
 
 DELIMITER ;
-*/

@@ -13,9 +13,9 @@ admin_blueprint = Blueprint(
     static_folder=''
 )
 
-@admin_blueprint.route('/create_report', methods=['GET', 'POST'])
+@admin_blueprint.route('/add_number_info', methods=['GET', 'POST'])
 @group_required
-def admin_report_handler():
+def admin_add_num_handler():
     conf = current_app.config['db_config']
     provider = SQLProvider(os.path.join(os.path.dirname(__file__), 'sql'))
 
