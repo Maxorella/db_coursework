@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Неоплаченные превышения</title>
+    <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <div class="container">
+        <h1>Неоплаченные превышения</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Сотрудник</th>
+                        <th>Должность</th>
+                        <th>Общая сумма превышения</th>
+                        <th>Месяц</th>
+                        <th>Год</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for exceed in exceed_report %}
+                        <tr>
+                            <td>{{ exceed[1] }}</td>
+                            <td>{{ exceed[2] }}</td>
+                            <td>{{ exceed[3] }}</td>
+                            <td>{{ exceed[4] }}</td>
+                            <td>{{ exceed[5] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    </div>
+    <p><a href="{{ url_for('management_bp.management_handler') }}" class="button">Посмотреть ещё отчет</a></p>
+    <p><a href="{{ url_for('main_menu_handler') }}" class="button">Вернуться в меню</a></p>
+
+</body>
+</html>

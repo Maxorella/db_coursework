@@ -30,7 +30,7 @@ def report_handler():
 
         if report_type == '1':
             #TODO
-            ok = route_create_exceed_report(month,year, current_app.config['db_config'], provider)
+            ok = route_create_exceed_report(month, year, current_app.config['db_config'], provider)
             if not ok:
                 return render_template('success.html')
             else:

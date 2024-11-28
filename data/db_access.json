@@ -1,5 +1,5 @@
 {
   "сотрудник": ["auth_bp", "payment_bp"],
-  "руководство": ["auth_bp", "query_bp", "payment_bp"],
+  "руководство": ["auth_bp", "query_bp", "payment_bp", "management_bp"],
   "админ": ["auth_bp", "admin_bp", "payment_bp", "report_bp"]
 }
