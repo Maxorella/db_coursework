@@ -1,27 +1,24 @@
 CREATE DATABASE sot_svyaz;
 USE sot_svyaz;
+SET foreign_key_checks = 0;
 
-
-DROP  TABLE IF EXISTS staff;
-DROP  TABLE IF EXISTS bcc;
-DROP  TABLE IF EXISTS invoice;
-DROP  TABLE IF EXISTS invoice_line;
-DROP  TABLE IF EXISTS payment;
-DROP  TABLE IF EXISTS payment_line;
-DROP  TABLE IF EXISTS user;
-
+DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS staff;
+DROP TABLE IF EXISTS bcc;
+DROP TABLE IF EXISTS limit_exceed;
+DROP TABLE IF EXISTS talk_sum;
+DROP TABLE IF EXISTS exceed_report;
 
 CREATE TABLE IF NOT EXISTS user (
-    user_id INT NOT NULL AUTO_INCREMENT,
+    user_id INT NOT NULL,
     login VARCHAR(255) NOT NULL UNIQUE,
     user_group ENUM('сотрудник', 'руководство', 'админ') NOT NULL,
     password VARCHAR(255) NOT NULL,
     PRIMARY KEY (user_id)
 );
 
-
 CREATE TABLE IF NOT EXISTS staff (
-    staff_id INT NOT NULL AUTO_INCREMENT,
+    staff_id INT NOT NULL,
     surname VARCHAR(100) NOT NULL,
     address VARCHAR(255),
     birthday DATE,
@@ -31,7 +28,6 @@ CREATE TABLE IF NOT EXISTS staff (
     PRIMARY KEY (staff_id),
     FOREIGN KEY (staff_id) REFERENCES user(user_id)
 );
-
 
 CREATE TABLE IF NOT EXISTS bcc (
     phone BIGINT NOT NULL,
@@ -69,6 +65,146 @@ CREATE TABLE IF NOT EXISTS exceed_report (
     PRIMARY KEY (staff_id, report_id),
     FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
 );
+
+delimiter $$
+
+CREATE PROCEDURE add_phone_summ(
+    IN p_phone BIGINT,
+    IN p_amount DECIMAL(15,2),
+    IN p_year INT,
+    IN p_month INT
+)
+BEGIN
+    DECLARE v_money_limit DECIMAL(15,2);
+
+    -- Получаем лимит по телефону из таблицы bcc
+    SELECT money_limit INTO v_money_limit
+    FROM bcc
+    WHERE phone = p_phone;
+
+    -- Если телефон найден и лимит установлен
+    IF v_money_limit IS NOT NULL THEN
+        -- Вставляем данные о разговоре в таблицу talk_sum
+        INSERT INTO talk_sum (phone, talk_summ, summ_month, summ_year)
+        VALUES (p_phone, p_amount, p_month, p_year);
+
+        -- Если сумма разговора превышает лимит, добавляем запись в limit_exceed
+        IF p_amount > v_money_limit THEN
+            INSERT INTO limit_exceed (phone, exceed_amount, exceed_month, exceed_year)
+            VALUES (p_phone, p_amount - v_money_limit, p_month, p_year);
+        END IF;
+    ELSE
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Телефон не найден в таблице bcc';
+    END IF;
+END; $$
+
+delimiter ;
+-- Вставка пользователей для администраторов
+INSERT INTO user (user_id, login, user_group, password)
+VALUES
+    (1, 'admin1', 'админ', 'password1'),
+    (2, 'admin2', 'админ', 'password2');
+
+-- Вставка пользователей для руководителей
+INSERT INTO user (user_id, login, user_group, password)
+VALUES
+    (3, 'management1', 'руководство', 'password1'),
+    (4, 'management2', 'руководство', 'password2');
+
+-- Вставка пользователей для сотрудников
+INSERT INTO user (user_id, login, user_group, password)
+VALUES
+    (5, 'employee1', 'сотрудник', 'password1'),
+    (6, 'employee2', 'сотрудник', 'password2'),
+    (7, 'employee3', 'сотрудник', 'password3'),
+    (8, 'employee4', 'сотрудник', 'password4'),
+    (9, 'employee5', 'сотрудник', 'password5'),
+    (10, 'employee6', 'сотрудник', 'password6'),
+    (11, 'employee7', 'сотрудник', 'password7'),
+    (12, 'employee8', 'сотрудник', 'password8'),
+    (13, 'employee9', 'сотрудник', 'password9'),
+    (14, 'employee10', 'сотрудник', 'password10');
+
+-- Вставка сотрудников в таблицу staff для администраторов
+INSERT INTO staff (staff_id, surname, address, birthday, position, hire_date, department_id)
+VALUES
+    (1, 'Admin1', 'ул. Центральная, 1', '1980-05-10', 'Системный администратор', '2021-01-01', 1),
+    (2, 'Admin2', 'ул. Ленина, 2', '1975-03-22', 'Главный администратор', '2020-06-15', 2);
+
+-- Вставка сотрудников в таблицу staff для руководителей
+INSERT INTO staff (staff_id, surname, address, birthday, position, hire_date, department_id)
+VALUES
+    (3, 'Management1', 'ул. Советская, 3', '1984-11-15', 'Руководитель отдела 1', '2022-07-10', 1),
+    (4, 'Management2', 'ул. Октябрьская, 4', '1990-02-20', 'Руководитель отдела 2', '2023-03-01', 2);
+
+-- Вставка сотрудников в таблицу staff для сотрудников
+INSERT INTO staff (staff_id, surname, address, birthday, position, hire_date, department_id)
+VALUES
+    (5, 'Employee1', 'ул. Ленина, 5', '1992-06-17', 'Менеджер', '2023-01-10', 1),
+    (6, 'Employee2', 'ул. Мира, 6', '1990-04-22', 'Инженер', '2022-11-14', 1),
+    (7, 'Employee3', 'ул. Победы, 7', '1985-11-05', 'Директор', '2021-03-01', 1),
+    (8, 'Employee4', 'ул. Московская, 8', '1987-07-30', 'Оперативник', '2022-06-20', 2),
+    (9, 'Employee5', 'ул. Куйбышева, 9', '1993-02-12', 'Бухгалтер', '2023-05-01', 2),
+    (10, 'Employee6', 'ул. Тверская, 10', '1989-08-14', 'Маркетолог', '2021-09-10', 2),
+    (11, 'Employee7', 'ул. Чапаева, 11', '1988-01-25', 'Аналитик', '2022-02-15', 3),
+    (12, 'Employee8', 'ул. Октябрьская, 12', '1995-10-30', 'Программист', '2023-08-05', 3),
+    (13, 'Employee9', 'ул. Строителей, 13', '1992-12-10', 'Менеджер', '2023-04-18', 3),
+    (14, 'Employee10', 'ул. Розы, 14', '1986-09-11', 'Юрист', '2021-12-15', 3);
+
+-- Вставка телефонов для администраторов
+INSERT INTO bcc (phone, money_limit, staff_id)
+VALUES
+    (89051544123, 1500.00, 1),  -- телефон администратора 1
+    (89051544124, 2000.00, 2);  -- телефон администратора 2
+
+-- Вставка телефонов для руководителей
+INSERT INTO bcc (phone, money_limit, staff_id)
+VALUES
+    (89051544125, 1000.00, 3),  -- телефон руководителя 1
+    (89051544126, 1200.00, 4);  -- телефон руководителя 2
+
+-- Вставка телефонов для сотрудников
+INSERT INTO bcc (phone, money_limit, staff_id)
+VALUES
+    (89051544127, 500.00, 5),  -- телефон сотрудника 1
+    (89051544128, 600.00, 6),  -- телефон сотрудника 2
+    (89051544129, 700.00, 7),  -- телефон сотрудника 3
+    (89051544130, 800.00, 8),  -- телефон сотрудника 4
+    (89051544131, 650.00, 9),  -- телефон сотрудника 5
+    (89051544132, 750.00, 10), -- телефон сотрудника 6
+    (89051544133, 950.00, 11), -- телефон сотрудника 7
+    (89051544134, 850.00, 12), -- телефон сотрудника 8
+    (89051544135, 1200.00, 13), -- телефон сотрудника 9
+    (89051544136, 1100.00, 14); -- телефон сотрудника 10
+
+-- Вставка превышений лимита для администраторов
+INSERT INTO limit_exceed (phone, exceed_amount, exceed_month, exceed_year)
+VALUES
+    (89051544123, 200.00, 10, 2024),  -- превышение для администратора 1
+    (89051544124, 400.00, 10, 2024);  -- превышение для администратора 2
+
+-- Вставка превышений лимита для руководителей
+INSERT INTO limit_exceed (phone, exceed_amount, exceed_month, exceed_year)
+VALUES
+    (89051544125, 100.00, 10, 2024),  -- превышение для руководителя 1
+    (89051544126, 300.00, 10, 2024);  -- превышение для руководителя 2
+
+-- Вставка превышений лимита для сотрудников
+INSERT INTO limit_exceed (phone, exceed_amount, exceed_month, exceed_year)
+VALUES
+    (89051544127, 50.00, 10, 2024),   -- превышение для сотрудника 1
+    (89051544128, 100.00, 10, 2024),  -- превышение для сотрудника 2
+    (89051544129, 150.00, 10, 2024),  -- превышение для сотрудника 3
+    (89051544130, 200.00, 10, 2024),  -- превышение для сотрудника 4
+    (89051544131, 50.00, 10, 2024),   -- превышение для сотрудника 5
+    (89051544132, 100.00, 10, 2024),  -- превышение для сотрудника 6
+    (89051544133, 300.00, 10, 2024),  -- превышение для сотрудника 7
+    (89051544134, 400.00, 10, 2024),  -- превышение для сотрудника 8
+    (89051544135, 150.00, 10, 2024),  -- превышение для сотрудника 9
+    (89051544136, 200.00, 10, 2024);  -- превышение для сотрудника 10
+
+SET foreign_key_checks = 1;
+
 
 /*
 DELIMITER $$
@@ -109,138 +245,4 @@ BEGIN
 END $$
 
 DELIMITER ;
-
-
-DELIMITER $$
-
-CREATE PROCEDURE add_phone_summ(
-    IN p_phone BIGINT,
-    IN p_amount DECIMAL(15,2),
-    IN p_year INT,
-    IN p_month INT
-)
-BEGIN
-    DECLARE v_money_limit DECIMAL(15,2);
-
-    -- Получаем лимит по телефону из таблицы bcc
-    SELECT money_limit INTO v_money_limit
-    FROM bcc
-    WHERE phone = p_phone;
-
-    -- Если телефон найден и лимит установлен
-    IF v_money_limit IS NOT NULL THEN
-        -- Вставляем данные о разговоре в таблицу talk_sum
-        INSERT INTO talk_sum (phone, talk_summ, summ_month, summ_year)
-        VALUES (p_phone, p_amount, p_month, p_year);
-
-        -- Если сумма разговора превышает лимит, добавляем запись в limit_exceed
-        IF p_amount > v_money_limit THEN
-            INSERT INTO limit_exceed (phone, exceed_amount, exceed_month, exceed_year)
-            VALUES (p_phone, p_amount - v_money_limit, p_month, p_year);
-        END IF;
-    ELSE
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Телефон не найден в таблице bcc';
-    END IF;
-END $$
-
-DELIMITER ;
 */
-
-INSERT INTO user (login, user_group, password) VALUES
-    ('management1', 'руководство', 'password1'),
-    ('management2', 'руководство', 'password2'),
-    ('admin1', 'админ', 'password1'),
-    ('admin2', 'админ', 'password2');
--- ('operator1', 'оператор', 'password1'),
--- ('operator2', 'оператор', 'password2'),
--- ('bank1', 'сотрудник банка', 'password1'),
--- ('bank2', 'сотрудник банка', 'password2');
-
-
-
--- Вставка пользователей для сотрудников из первого отдела (6 сотрудников)
-INSERT INTO user (login, user_group, password)
-VALUES
-    ('login1', 'сотрудник', 'password1'), -- Иванов
-    ('login2', 'сотрудник', 'password2'), -- Петров
-    ('login3', 'сотрудник', 'password3'), -- Сидоров
-    ('login4', 'сотрудник', 'password4'), -- Алексеев
-    ('login5', 'сотрудник', 'password5'), -- Николаев
-    ('login6', 'сотрудник', 'password6'); -- Захаров
-
--- Вставка пользователей для сотрудников из второго отдела (4 сотрудника)
-INSERT INTO user (login, user_group, password)
-VALUES
-    ('login7', 'сотрудник', 'password7'), -- Кузнецов
-    ('login8', 'сотрудник', 'password8'), -- Морозов
-    ('login9', 'сотрудник', 'password9'), -- Дмитриев
-    ('login10', 'сотрудник', 'password10'); -- Егорова
-
-
--- Вставка 6 сотрудников в первый отдел (department_id = 1)
-INSERT INTO staff (surname, address, birthday, position, hire_date, department_id)
-VALUES
-    ('Иванов', 'ул. Ленина, 1', '1985-06-15', 'Менеджер', '2023-01-10', 1),
-    ('Петров', 'ул. Мира, 5', '1990-04-22', 'Инженер', '2022-11-14', 1),
-    ('Сидоров', 'ул. Победы, 3', '1982-11-05', 'Директор', '2021-03-01', 1),
-    ('Алексеев', 'ул. Московская, 10', '1987-07-30', 'Оперативник', '2022-06-20', 1),
-    ('Николаев', 'ул. Куйбышева, 7', '1993-02-12', 'Бухгалтер', '2023-05-01', 1),
-    ('Захаров', 'ул. Тверская, 13', '1989-08-14', 'Маркетолог', '2021-09-10', 1);
-
--- Вставка 4 сотрудников во второй отдел (department_id = 2)
-INSERT INTO staff (surname, address, birthday, position, hire_date, department_id)
-VALUES
-    ('Кузнецов', 'ул. Чапаева, 15', '1988-01-25', 'Аналитик', '2022-02-15', 2),
-    ('Морозов', 'ул. Октябрьская, 2', '1995-10-30', 'Программист', '2023-08-05', 2),
-    ('Дмитриев', 'ул. Строителей, 8', '1992-12-10', 'Менеджер', '2023-04-18', 2),
-    ('Егорова', 'ул. Розы, 6', '1986-09-11', 'Юрист', '2021-12-15', 2);
-
--- Вставка телефонов для сотрудников из первого отдела
-INSERT INTO bcc (phone, money_limit, staff_id)
-VALUES
-    (89051544123, 500.00, 1),
-    (89051544124, 600.00, 1),
-    (89051544125, 400.00, 2),
-    (89051544126, 300.00, 2),
-    (89051544127, 700.00, 3),
-    (89051544128, 850.00, 3),
-    (89051544129, 900.00, 4),
-    (89051544130, 500.00, 4),
-    (89051544131, 650.00, 5),
-    (89051544132, 750.00, 5),
-    (89051544133, 950.00, 6),
-    (89051544134, 550.00, 6);
-
--- Вставка телефонов для сотрудников из второго отдела
-INSERT INTO bcc (phone, money_limit, staff_id)
-VALUES
-    (89051544135, 200.00, 7),
-    (89051544136, 300.00, 7),
-    (89051544137, 400.00, 8),
-    (89051544138, 500.00, 8),
-    (89051544139, 600.00, 9),
-    (89051544140, 700.00, 9),
-    (89051544141, 800.00, 10),
-    (89051544142, 900.00, 10);
-
-
--- Превышение лимита для сотрудника с id=1 (Иванов, два телефона)
-INSERT INTO limit_exceed (phone, exceed_amount, exceed_month, exceed_year, repayment_date)
-VALUES
-    (89051544123, 200.00, 10, 2024, NULL), -- Превышение на телефоне 89051544123
-    (89051544124, 150.00, 10, 2024, NULL); -- Превышение на телефоне 89051544124
-
--- Превышение лимита для сотрудника с id=2 (Петров)
-INSERT INTO limit_exceed (phone, exceed_amount, exceed_month, exceed_year, repayment_date)
-VALUES
-    (89051544125, 100.00, 10, 2024, NULL); -- Превышение на телефоне 89051544125
-
--- Превышение лимита для сотрудника с id=3 (Сидоров)
-INSERT INTO limit_exceed (phone, exceed_amount, exceed_month, exceed_year, repayment_date)
-VALUES
-    (89051544127, 350.00, 10, 2024, NULL); -- Превышение на телефоне 89051544127
-
--- Превышение лимита для сотрудника с id=4 (Алексеев)
-INSERT INTO limit_exceed (phone, exceed_amount, exceed_month, exceed_year, repayment_date)
-VALUES
-    (89051544129, 50.00, 10, 2024, NULL); -- Превышение на телефоне 89051544129

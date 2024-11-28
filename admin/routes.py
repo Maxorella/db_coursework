@@ -4,7 +4,7 @@ import os
 from admin.select import save_report, create_exceed_report
 from database.sql_provider import SQLProvider
 
-from utils.access import group_required
+from access import group_required
 
 admin_blueprint = Blueprint(
     'admin_bp',

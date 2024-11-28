@@ -1,7 +1,6 @@
-from flask import Blueprint, request, render_template, redirect, session, url_for, current_app
+from flask import Blueprint, request, render_template, current_app
 import os
 
-from auth.select import select_user
 from database.sql_provider import SQLProvider
 from access import group_required
 from query.model_route import fetch_staff, staff_exceed_route
