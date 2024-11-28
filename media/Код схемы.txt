@@ -1,0 +1,47 @@
+// Use DBML to define your database structure 
+// Docs: https://dbml.dbdiagram.io/docs 
+
+Table user { 
+user_id INT PK
+login VARCHAR(255)
+user_group ENUM('сотрудник', 'руководство', 'админ')
+password VARCHAR(255)
+}
+
+Table staff {
+staff_id INT [ref: - user.user_id]
+surname VARCHAR(100)
+address VARCHAR(255)
+birthday DATE
+position VARCHAR(100)
+hire_date DATE
+department_id INT
+}
+
+Table bcc {
+phone BIGINT PK
+money_limit DECIMAL(15,2)
+staff_id INT [ref: - staff.staff_id]
+}
+
+Table limit_exceed {
+phone BIGINT  [ref: - bcc.phone] 
+exceed_amount DECIMAL(15,2) PK
+exceed_month INT PK
+exceed_year INT
+repayment_date DATE
+}
+
+Table talk_sum {
+phone BIGINT [ref: - bcc.phone]
+talk_summ DECIMAL(15,2)
+summ_month INT PK
+summ_year INT PK
+}
+
+Table exceed_report {
+    staff_id INT [ref: - staff.staff_id] 
+    total_exceed_amount DECIMAL(15,2)
+    report_month INT PK
+    report_year INT PK
+}
