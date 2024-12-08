@@ -6,9 +6,9 @@ DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS staff;
 DROP TABLE IF EXISTS bcc;
 DROP TABLE IF EXISTS limit_exceed;
-DROP TABLE IF EXISTS talk_sum;
 DROP TABLE IF EXISTS exceed_report;
 
+-- пользователи
 CREATE TABLE IF NOT EXISTS user (
     user_id INT NOT NULL,
     login VARCHAR(255) NOT NULL UNIQUE,
@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS user (
     PRIMARY KEY (user_id)
 );
 
+-- сведенья о сотрудниках
 CREATE TABLE IF NOT EXISTS staff (
     staff_id INT NOT NULL,
     surname VARCHAR(100) NOT NULL,
@@ -29,16 +30,38 @@ CREATE TABLE IF NOT EXISTS staff (
     FOREIGN KEY (staff_id) REFERENCES user(user_id)
 );
 
+-- служебная сотовая связь
 CREATE TABLE IF NOT EXISTS bcc (
-    phone BIGINT NOT NULL,
+    phone VARCHAR(32) NOT NULL,
     money_limit DECIMAL(15,2) NOT NULL,
     staff_id INT,
     PRIMARY KEY (phone),
     FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
 );
 
+-- счет
+CREATE TABLE IF NOT EXISTS invoice (
+    invoice_id INT,
+    creation_date DATETIME,
+    invoice_month INT,
+    invoice_year INT,
+    total_sum INT,
+    PRIMARY KEY (invoice_id)
+);
+
+-- строка счета
+CREATE TABLE IF NOT EXISTS invoice_line (
+    invoice_id INT,
+    phone VARCHAR(32),
+    sum_to_pay DECIMAL(15, 2),
+    PRIMARY KEY (invoice_id, phone),
+    FOREIGN KEY (invoice_id) REFERENCES invoice(invoice_id)
+
+);
+
+-- превышение лимита
 CREATE TABLE IF NOT EXISTS limit_exceed (
-    phone BIGINT NOT NULL,
+    phone VARCHAR(32) NOT NULL,
     exceed_amount DECIMAL(15,2) NOT NULL,
     exceed_month INT NOT NULL,
     exceed_year INT NOT NULL,
@@ -47,15 +70,27 @@ CREATE TABLE IF NOT EXISTS limit_exceed (
     FOREIGN KEY (phone) REFERENCES bcc(phone)
 );
 
-CREATE TABLE IF NOT EXISTS talk_sum (
-    phone BIGINT NOT NULL,
-    talk_summ DECIMAL(15,2) NOT NULL,
-    summ_month INT NOT NULL,
-    summ_year INT NOT NULL,
-    PRIMARY KEY (phone, summ_month, summ_year),
-    FOREIGN KEY (phone) REFERENCES bcc(phone)
+-- платежка
+CREATE TABLE IF NOT EXISTS payment (
+  payment_number INT,
+  creation_date DATETIME NOT NULL,
+  PRIMARY KEY (payment_number)
 );
 
+
+-- строка платежки
+CREATE TABLE IF NOT EXISTS payment_line (
+  payment_number INT,
+  phone VARCHAR(32) NOT NULL,
+  got_sum INT NOT NULL,
+  payment_month INT,
+  payment_year INT,
+  PRIMARY KEY (payment_number, phone),
+  FOREIGN KEY (phone) REFERENCES bcc(phone),
+  FOREIGN KEY (payment_number) REFERENCES payment(payment_number)
+);
+
+-- отчет по неоплаченным превышениям
 CREATE TABLE IF NOT EXISTS exceed_report (
     staff_id INT NOT NULL,
     total_exceed_amount DECIMAL(15,2) NOT NULL,
@@ -65,39 +100,7 @@ CREATE TABLE IF NOT EXISTS exceed_report (
     FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
 );
 
-delimiter $$
 
-CREATE PROCEDURE add_phone_summ(
-    IN p_phone BIGINT,
-    IN p_amount DECIMAL(15,2),
-    IN p_year INT,
-    IN p_month INT
-)
-BEGIN
-    DECLARE v_money_limit DECIMAL(15,2);
-
-    -- Получаем лимит по телефону из таблицы bcc
-    SELECT money_limit INTO v_money_limit
-    FROM bcc
-    WHERE phone = p_phone;
-
-    -- Если телефон найден и лимит установлен
-    IF v_money_limit IS NOT NULL THEN
-        -- Вставляем данные о разговоре в таблицу talk_sum
-        INSERT INTO talk_sum (phone, talk_summ, summ_month, summ_year)
-        VALUES (p_phone, p_amount, p_month, p_year);
-
-        -- Если сумма разговора превышает лимит, добавляем запись в limit_exceed
-        IF p_amount > v_money_limit THEN
-            INSERT INTO limit_exceed (phone, exceed_amount, exceed_month, exceed_year)
-            VALUES (p_phone, p_amount - v_money_limit, p_month, p_year);
-        END IF;
-    ELSE
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Телефон не найден в таблице bcc';
-    END IF;
-END; $$
-
-delimiter ;
 -- Вставка пользователей для администраторов
 INSERT INTO user (user_id, login, user_group, password)
 VALUES
@@ -153,54 +156,54 @@ VALUES
 -- Вставка телефонов для администраторов
 INSERT INTO bcc (phone, money_limit, staff_id)
 VALUES
-    (89051544123, 1500.00, 1),  -- телефон администратора 1
-    (89051544124, 2000.00, 2);  -- телефон администратора 2
+    ('89051544123', 1500.00, 1),  -- телефон администратора 1
+    ('89051544124', 2000.00, 2);  -- телефон администратора 2
 
 -- Вставка телефонов для руководителей
 INSERT INTO bcc (phone, money_limit, staff_id)
 VALUES
-    (89051544125, 1000.00, 3),  -- телефон руководителя 1
-    (89051544126, 1200.00, 4);  -- телефон руководителя 2
+    ('89051544125', 1000.00, 3),  -- телефон руководителя 1
+    ('89051544126', 1200.00, 4);  -- телефон руководителя 2
 
 -- Вставка телефонов для сотрудников
 INSERT INTO bcc (phone, money_limit, staff_id)
 VALUES
-    (89051544127, 500.00, 5),  -- телефон сотрудника 1
-    (89051544128, 600.00, 6),  -- телефон сотрудника 2
-    (89051544129, 700.00, 7),  -- телефон сотрудника 3
-    (89051544130, 800.00, 8),  -- телефон сотрудника 4
-    (89051544131, 650.00, 9),  -- телефон сотрудника 5
-    (89051544132, 750.00, 10), -- телефон сотрудника 6
-    (89051544133, 950.00, 11), -- телефон сотрудника 7
-    (89051544134, 850.00, 12), -- телефон сотрудника 8
-    (89051544135, 1200.00, 13), -- телефон сотрудника 9
-    (89051544136, 1100.00, 14); -- телефон сотрудника 10
+    ('89051544127', 500.00, 5),  -- телефон сотрудника 1
+    ('89051544128', 600.00, 6),  -- телефон сотрудника 2
+    ('89051544129', 700.00, 7),  -- телефон сотрудника 3
+    ('89051544130', 800.00, 8),  -- телефон сотрудника 4
+    ('89051544131', 650.00, 9),  -- телефон сотрудника 5
+    ('89051544132', 750.00, 10), -- телефон сотрудника 6
+    ('89051544133', 950.00, 11), -- телефон сотрудника 7
+    ('89051544134', 850.00, 12), -- телефон сотрудника 8
+    ('89051544135', 1200.00, 13), -- телефон сотрудника 9
+    ('89051544136', 1100.00, 14); -- телефон сотрудника 10
 
 -- Вставка превышений лимита для администраторов
 INSERT INTO limit_exceed (phone, exceed_amount, exceed_month, exceed_year)
 VALUES
-    (89051544123, 200.00, 10, 2024),  -- превышение для администратора 1
-    (89051544124, 400.00, 10, 2024);  -- превышение для администратора 2
+    ('89051544123', 200.00, 10, 2024),  -- превышение для администратора 1
+    ('89051544124', 400.00, 10, 2024);  -- превышение для администратора 2
 
 -- Вставка превышений лимита для руководителей
 INSERT INTO limit_exceed (phone, exceed_amount, exceed_month, exceed_year)
 VALUES
-    (89051544125, 100.00, 10, 2024),  -- превышение для руководителя 1
-    (89051544126, 300.00, 10, 2024);  -- превышение для руководителя 2
+    ('89051544125', 100.00, 10, 2024),  -- превышение для руководителя 1
+    ('89051544126', 300.00, 10, 2024);  -- превышение для руководителя 2
 
 -- Вставка превышений лимита для сотрудников
 INSERT INTO limit_exceed (phone, exceed_amount, exceed_month, exceed_year)
 VALUES
-    (89051544127, 50.00, 10, 2024),   -- превышение для сотрудника 1
-    (89051544128, 100.00, 10, 2024),  -- превышение для сотрудника 2
-    (89051544129, 150.00, 10, 2024),  -- превышение для сотрудника 3
-    (89051544130, 200.00, 10, 2024),  -- превышение для сотрудника 4
-    (89051544131, 50.00, 10, 2024),   -- превышение для сотрудника 5
-    (89051544132, 100.00, 10, 2024),  -- превышение для сотрудника 6
-    (89051544133, 300.00, 10, 2024),  -- превышение для сотрудника 7
-    (89051544134, 400.00, 10, 2024),  -- превышение для сотрудника 8
-    (89051544135, 150.00, 10, 2024),  -- превышение для сотрудника 9
-    (89051544136, 200.00, 10, 2024);  -- превышение для сотрудника 10
+    ('89051544127', 50.00, 10, 2024),   -- превышение для сотрудника 1
+    ('89051544128', 100.00, 10, 2024),  -- превышение для сотрудника 2
+    ('89051544129', 150.00, 10, 2024),  -- превышение для сотрудника 3
+    ('89051544130', 200.00, 10, 2024),  -- превышение для сотрудника 4
+    ('89051544131', 50.00, 10, 2024),   -- превышение для сотрудника 5
+    ('89051544132', 100.00, 10, 2024),  -- превышение для сотрудника 6
+    ('89051544133', 300.00, 10, 2024),  -- превышение для сотрудника 7
+    ('89051544134', 400.00, 10, 2024),  -- превышение для сотрудника 8
+    ('89051544135', 150.00, 10, 2024),  -- превышение для сотрудника 9
+    ('89051544136', 200.00, 10, 2024);  -- превышение для сотрудника 10
 
 SET foreign_key_checks = 1;
 
