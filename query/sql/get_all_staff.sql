@@ -1,0 +1,1 @@
+SELECT staff_id, surname, position, department_id FROM staff;

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Меню запросов</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='queries_menu.css') }}">
+</head>
+<body>
+    <div class="container">
+        {% if message %}
+            <h3 class="message">
+                {{ message }}
+            </h3>
+        {% endif %}
+        <header>
+            <h1>Меню запросов</h1>
+            <h2>Выберите запрос:</h2>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('query_bp.query_staff_phone_handler') }}" class="button">Получить номера телефонов сотрудника</a></li>
+
+            </ul>
+        </nav>
+
+        <div class="back-button">
+            <a href="{{ url_for('main_menu_handler') }}" class="button">В главное меню</a>
+        </div>
+    </div>
+</body>
+</html>

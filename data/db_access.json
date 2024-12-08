@@ -1,5 +1,5 @@
 {
-  "сотрудник": ["auth_bp", "payment_bp"],
-  "руководство": ["auth_bp", "query_bp", "payment_bp", "management_bp"],
-  "админ": ["auth_bp", "admin_bp", "payment_bp", "report_bp"]
+  "сотрудник": ["auth_bp.auth_handler"],
+  "руководство": ["auth_bp.auth_handler", "query_bp.query_menu_handler","query_bp.query_staff_phone_handler", "query_bp.query_phone_exceed_handler", "query_bp.query_phone_payment_handler"],
+  "админ": ["auth_bp.auth_handler"]
 }

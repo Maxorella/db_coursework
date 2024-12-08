@@ -8,7 +8,7 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-
+'''
 def group_required(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -24,4 +24,23 @@ def group_required(func):
                 return redirect(url_for('no_access_handler'))
         else:
             return redirect(url_for('main_menu_handler'))
+    return wrapper
+'''
+
+def group_required(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if 'user_group' in session:
+            user_role = session.get('user_group')  # группа пользователя
+            user_request = request.endpoint  # Полное имя функции (например, 'auth_bp.auth_func')
+            access = current_app.config['db_access']  # Конфигурация доступа из json
+
+            # Проверяем, есть ли роль в access и разрешена ли указанная функция
+            if user_role in access and user_request in access[user_role]:
+                return func(*args, **kwargs)
+            else:
+                return redirect(url_for('no_access_handler'))  # доступа нет
+        else:
+            return redirect(url_for('no_access_handler'))  # доступа нет
+
     return wrapper

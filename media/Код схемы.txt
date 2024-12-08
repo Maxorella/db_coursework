@@ -1,47 +1,91 @@
 // Use DBML to define your database structure 
 // Docs: https://dbml.dbdiagram.io/docs 
 
-Table user { 
+
+// пользователи
+Table user {
 user_id INT PK
 login VARCHAR(255)
 user_group ENUM('сотрудник', 'руководство', 'админ')
 password VARCHAR(255)
 }
 
+// сведенья о сотрудниках
 Table staff {
-staff_id INT [ref: - user.user_id]
+staff_id INT PK [ref: - user.user_id]
 surname VARCHAR(100)
 address VARCHAR(255)
 birthday DATE
 position VARCHAR(100)
-hire_date DATE
+position_hire_date DATE
 department_id INT
 }
 
+// служебная сотовая связь
 Table bcc {
-phone BIGINT PK
+phone VARCHAR(32) PK
 money_limit DECIMAL(15,2)
-staff_id INT [ref: - staff.staff_id]
+staff_id INT
 }
 
+Ref: bcc.staff_id > staff.staff_id
+
+// счет
+Table invoice {
+  invoice_id INT PK
+  creation_date DATETIME
+  invoice_month INT
+  invoice_year INT
+  total_sum DECIMAL(15,2)
+}
+
+// строка счета
+Table invoice_line {
+  invoice_id INT PK
+  phone VARCHAR(32) PK
+  sum_to_pay INT
+}
+
+Ref: invoice_line.invoice_id > invoice.invoice_id
+Ref: invoice_line.phone > bcc.phone
+
+
+// превышения лимита
 Table limit_exceed {
-phone BIGINT  [ref: - bcc.phone] 
-exceed_amount DECIMAL(15,2) PK
+phone VARCHAR(32) PK
+exceed_amount DECIMAL(15,2)
 exceed_month INT PK
-exceed_year INT
+exceed_year INT PK
 repayment_date DATE
 }
 
-Table talk_sum {
-phone BIGINT [ref: - bcc.phone]
-talk_summ DECIMAL(15,2)
-summ_month INT PK
-summ_year INT PK
+Ref: limit_exceed.phone > bcc.phone
+
+// платежка
+Table payment {
+  payment_number INT PK
+  creation_date DATETIME
 }
 
+// строка платежки
+Table payment_line {
+  payment_number INT PK
+  phone VARCHAR(32) PK
+  got_sum INT
+  payment_month INT
+  payment_year INT
+  creation_date DATETIME
+}
+
+Ref: payment_line.payment_number > payment.payment_number
+Ref: payment_line.phone > bcc.phone
+
+// отчет о превышениях лимита(неоплаченных)
 Table exceed_report {
-    staff_id INT [ref: - staff.staff_id] 
+    staff_id INT PK
     total_exceed_amount DECIMAL(15,2)
     report_month INT PK
     report_year INT PK
 }
+
+Ref: exceed_report.staff_id > staff.staff_id

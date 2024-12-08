@@ -16,14 +16,13 @@
         {% else %}
             <h1>Выберите сотрудника</h1>
 
-            <form action="{{ url_for('query_bp.staff_query_result_handler') }}" method="GET">
+            <form action="{{ url_for('query_bp.query_staff_phone_handler') }}" method="POST">
                 <label for="employee_choise">Сотрудник:</label>
                 <select name="staff_id" id="employee_choise">
-                    {% for staff_tuple in staff_list %}
-                        <option value="{{ staff_tuple[0] }}">{{ staff_tuple[1] }} {{ staff_tuple[2] }}</option>
+                    {% for staff_info in staff_list %}
+                        <option value="{{ staff_info['staff_id'] }}">{{ staff_info['surname'] }}, должность: {{ staff_info['position'] }}, отдел №: {{ staff_info['department_id'] }}</option>
                     {% endfor %}
                 </select>
-                <br><br>
                 <input type="submit" value="Отправить"/>
             </form>
         {% endif %}

@@ -9,9 +9,9 @@ FROM
 JOIN
     bcc b ON le.phone = b.phone
 WHERE
-    b.staff_id = $staff_id -- Здесь замените staff_id на нужный идентификатор сотрудника.
+    b.staff_id = $staff_id
   AND
-    le.repayment_date IS NULL -- Только неоплаченные долги
+    le.repayment_date IS NULL
 ORDER BY
-    le.exceed_year DESC,  -- Сначала по годам
-    le.exceed_month DESC; -- Затем по месяцам
+    le.exceed_year DESC,
+    le.exceed_month DESC;

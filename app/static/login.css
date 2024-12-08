@@ -19,10 +19,7 @@ body {
 }
 
 .message {
-    background-color: #ffdddd;
-    color: #d8000c;
     padding: 10px;
-    border: 1px solid #d8000c;
     border-radius: 5px;
     margin-bottom: 15px;
 }
@@ -55,4 +52,26 @@ form input[type="submit"] {
 
 form input[type="submit"]:hover {
     background-color: #0056b3;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    color: #ffffff;
+    background-color: #007bff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-size: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+}
+
+.button:active {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

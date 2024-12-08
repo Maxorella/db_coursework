@@ -39,12 +39,15 @@ def select_list(db_config: dict, _sql: str):
 
     return result, schema, err
 
+
 def select_dict(db_config: dict, _sql: str):
-    result, schema = select_list(db_config, _sql)
+    result, schema, err = select_list(db_config, _sql)
+    if err != '':
+        return None, err
     result_dict = []
     for item in result:
         result_dict.append(dict(zip(schema, item)))
-    return result_dict
+    return result_dict, ''
 
 
 

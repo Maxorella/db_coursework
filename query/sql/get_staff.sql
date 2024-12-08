@@ -1,1 +1,0 @@
-SELECT staff_id, surname, position FROM staff;

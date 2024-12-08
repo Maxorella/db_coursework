@@ -3,7 +3,6 @@ import os
 
 from database.sql_provider import SQLProvider
 from access import group_required
-from query.model_route import fetch_staff, staff_exceed_route
 from report.model_route import route_create_exceed_report
 
 report_blueprint = Blueprint(

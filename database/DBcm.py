@@ -29,4 +29,5 @@ class DBContextManager:
             else:
                 self.conn.commit()
             self.cursor.close()
+            self.conn.close()
         return True

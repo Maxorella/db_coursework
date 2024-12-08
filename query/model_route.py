@@ -1,12 +1,31 @@
-from database.select import select_list
+from database.select import select_list, select_dict
 
-def fetch_staff(db_config, sql_provider):
+
+def fetch_all_staff(db_config, sql_provider):
     error_message = ''
-    _sql = sql_provider.get('get_staff.sql')
-    result, _, err = select_list(db_config, _sql) # ([staff_id, surname, position],[staff_id, surname, position])
+    _sql = sql_provider.get('get_all_staff.sql')
+    result, err = select_dict(db_config, _sql) # ([staff_id, surname, position, department_id],[staff_id, surname, position, department_id])
     if err != '':
         err = 'Ошибка во время выполнения запроса!'
     return result, err
+
+
+def fetch_id_phone(db_config, sql_provider, staff_id):
+    error_message = ''
+    _sql = sql_provider.get('get_staff_phones.sql', staff_id=staff_id)
+    result, err = select_dict(db_config, _sql)  # ([])
+    if err != '':
+        err = 'Ошибка во время выполнения запроса!'
+    return result, err
+
+def fetch_id_staff(db_config, sql_provider, staff_id):
+    error_message = ''
+    _sql = sql_provider.get('get_staff_by_id.sql', staff_id=staff_id)
+    result, err = select_dict(db_config, _sql) #
+    if err != '':
+        err = 'Ошибка во время выполнения запроса!'
+        return None, err
+    return result[0], err
 
 
 def fetch_staff_exceed(staff_id, db_config, sql_provider):
