@@ -1,5 +1,5 @@
 {
   "сотрудник": ["auth_bp.auth_handler"],
-  "руководство": ["auth_bp.auth_handler", "query_bp.query_menu_handler","query_bp.query_staff_phone_handler", "query_bp.query_phone_exceed_handler", "query_bp.query_phone_payment_handler"],
+  "руководство": ["auth_bp.auth_handler", "query_bp.query_menu_handler","query_bp.query_staff_phone_handler", "query_bp.query_phone_exceed_handler", "query_bp.query_phone_payment_handler", "query_bp.query_staff_exceed_handler"],
   "админ": ["auth_bp.auth_handler"]
 }

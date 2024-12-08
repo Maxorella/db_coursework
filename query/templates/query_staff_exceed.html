@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выберите сотрудника</title>
+    <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <div class="container">
+        {% if message %}
+            <div class="message">
+                <p>{{ message }}</p>
+            </div>
+        {% endif %}
+            <h1>Выберите сотрудника для поиска его неоплаченных превышений по телефонам:</h1>
+
+            <form action="{{ url_for('query_bp.query_staff_exceed_handler') }}" method="POST">
+                <label for="phone_choice">Телефоны:</label>
+                <select name="staff_id" id="phone_choice">
+                    {% for staff_dict in staff_dict_list %}
+                        <option value="{{ staff_dict['staff_id'] }}">{{ staff_dict['surname'] }}, должность: {{ staff_dict['position'] }}, отдел №: {{ staff_dict['department_id'] }}</option>
+                    {% endfor %}
+                </select>
+                <input type="submit" value="Отправить"/>
+            </form>
+    </div>
+    <p><a href="{{ url_for('query_bp.query_menu_handler') }}" class="button">В меню запросов</a></p>
+    <p><a href="{{ url_for('main_menu_handler') }}" class="button">Вернуться в меню</a></p>
+
+</body>
+</html>

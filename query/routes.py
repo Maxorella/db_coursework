@@ -38,10 +38,10 @@ def query_staff_phone_handler():
         staff_id = request.form.get('staff_id')
         staff_info, err_mes = fetch_id_staff(conf, provider, staff_id)  # [id surname position department_id]
         if err_mes != '':
-            return redirect(url_for('query_bp.query_menu_handler', message='err_mes'))
+            return redirect(url_for('query_bp.query_menu_handler', message=err_mes))
         result, err_mes = fetch_id_phone(conf, provider, staff_info['staff_id'])
         if err_mes != '':
-            return redirect(url_for('query_bp.query_menu_handler', message='err_mes'))
+            return redirect(url_for('query_bp.query_menu_handler', message=err_mes))
         else:
             return render_template("query_staff_phone_result.html", staff_info=staff_info, result=result)
 
@@ -61,11 +61,34 @@ def query_phone_exceed_handler():
         phone = request.form.get('phone')
         result, err_mes = fetch_phone_exceed(conf, provider, phone)
         if err_mes != '':
-            return redirect(url_for('query_bp.query_menu_handler', message='err_mes'))
+            return redirect(url_for('query_bp.query_menu_handler', message=err_mes))
         else:
             return render_template("query_phone_exceed_result.html", phone=phone, phone_exceed=result, result=result)
 
 
+@query_blueprint.route('/query_staff_exceed', methods=['GET', 'POST'])
+@group_required
+def query_staff_exceed_handler():
+    conf = current_app.config['db_config']
+
+    if request.method == 'GET':
+        response, err_mes = fetch_all_staff(conf, provider)
+        if err_mes != '':
+            return render_template("query_staff_exceed.html", message=err_mes)
+        else:
+            return render_template("query_staff_exceed.html", staff_dict_list=response)
+    if request.method == 'POST':
+        staff_id = request.form.get('staff_id')
+        staff_info, err_mes = fetch_id_staff(conf, provider, staff_id)  # [id surname position department_id]
+        if err_mes != '':
+            return redirect(url_for('query_bp.query_staff_exceed_handler', message=err_mes))
+        result, err_mes = fetch_staff_exceed(conf, provider, staff_id)
+        if err_mes != '':
+            return redirect(url_for('query_bp.query_staff_exceed_handler', message=err_mes))
+        else:
+            return render_template("query_staff_exceed_result.html", staff=staff_info, staff_exceed=result, result=result)
+
+'''
 @query_blueprint.route('/query_phone_payment', methods=['GET','POST'])
 @group_required
 def query_phone_payment_handler():
@@ -74,3 +97,4 @@ def query_phone_payment_handler():
         return render_template("query_staff_phone.html", message=err_mes)
     else:
         return render_template("query_staff_phone.html", staff_list=response) # [staff_id, surname, position, department_id]
+'''
