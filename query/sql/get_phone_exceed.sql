@@ -6,10 +6,8 @@ SELECT
     le.repayment_date
 FROM
     limit_exceed le
-JOIN
-    bcc b ON le.phone = b.phone
 WHERE
-    b.staff_id = $staff_id
+    le.phone = $phone
   AND
     le.repayment_date IS NULL
 ORDER BY

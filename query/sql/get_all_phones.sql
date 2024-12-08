@@ -1,0 +1,1 @@
+SELECT bcc.phone, bcc.money_limit FROM bcc;

@@ -3,7 +3,8 @@ import os
 
 from database.sql_provider import SQLProvider
 from access import group_required
-from query.model_route import staff_exceed_route, fetch_id_phone, fetch_all_staff, fetch_id_staff
+from query.model_route import staff_exceed_route, fetch_id_phone, fetch_all_staff, fetch_id_staff, fetch_all_phones, \
+    fetch_staff_exceed, fetch_phone_exceed
 
 query_blueprint = Blueprint(
     'query_bp',
@@ -45,17 +46,24 @@ def query_staff_phone_handler():
             return render_template("query_staff_phone_result.html", staff_info=staff_info, result=result)
 
 
-@query_blueprint.route('/query_phone_exceed', methods=['GET','POST'])
+@query_blueprint.route('/query_phone_exceed', methods=['GET', 'POST'])
 @group_required
 def query_phone_exceed_handler():
     conf = current_app.config['db_config']
 
-    response, err_mes = fetch_all_staff(conf, provider)
-    if err_mes != '':
-        return render_template("query_staff_phone.html", message=err_mes)
-    else:
-        return render_template("query_staff_phone.html", staff_list=response)  # [staff_id, surname, position, department_id]
-
+    if request.method == 'GET':
+        response, err_mes = fetch_all_phones(conf, provider)
+        if err_mes != '':
+            return render_template("query_phone_exceed.html", message=err_mes)
+        else:
+            return render_template("query_phone_exceed.html", phone_dict_list=response)
+    if request.method == 'POST':
+        phone = request.form.get('phone')
+        result, err_mes = fetch_phone_exceed(conf, provider, phone)
+        if err_mes != '':
+            return redirect(url_for('query_bp.query_menu_handler', message='err_mes'))
+        else:
+            return render_template("query_phone_exceed_result.html", phone=phone, phone_exceed=result, result=result)
 
 
 @query_blueprint.route('/query_phone_payment', methods=['GET','POST'])

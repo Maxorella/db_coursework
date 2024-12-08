@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Выберите сотрудника</title>
+    <title>Выберите телефон</title>
     <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet" type="text/css">
 </head>
 <body>
     <div class="container">
-        <!-- Отображение сообщения, если оно передано -->
         {% if message %}
             <div class="message">
                 <p>{{ message }}</p>
             </div>
         {% endif %}
-            <h1>Выберите сотрудника для поиска его служебных телефонов:</h1>
-            <form action="{{ url_for('query_bp.query_staff_phone_handler') }}" method="POST">
-                <label for="employee_choice">Сотрудник:</label>
-                <select name="staff_id" id="employee_choice">
-                    {% for staff_info in staff_list %}
-                        <option value="{{ staff_info['staff_id'] }}">{{ staff_info['surname'] }}, должность: {{ staff_info['position'] }}, отдел №: {{ staff_info['department_id'] }}</option>
+            <h1>Выберите телефон для поиска неоплаченных превышений по нему:</h1>
+
+            <form action="{{ url_for('query_bp.query_phone_exceed_handler') }}" method="POST">
+                <label for="phone_choice">Телефоны:</label>
+                <select name="phone" id="phone_choice">
+                    {% for phone_dict in phone_dict_list %}
+                        <option value="{{ phone_dict['phone'] }}">{{ phone_dict['phone'] }}</option>
                     {% endfor %}
                 </select>
                 <input type="submit" value="Отправить"/>
