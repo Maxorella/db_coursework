@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Выберите телефон</title>
+    <title>Введите телефон</title>
     <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet" type="text/css">
 </head>
 <body>
@@ -13,20 +13,15 @@
                 <p>{{ message }}</p>
             </div>
         {% endif %}
-            <h1>Выберите телефон для поиска неоплаченных превышений по нему:</h1>
+        <h1>Введите номер телефона для поиска неоплаченных превышений:</h1>
 
-            <form action="{{ url_for('query_bp.query_phone_exceed_handler') }}" method="POST">
-                <label for="phone_choice">Телефоны:</label>
-                <select name="phone" id="phone_choice">
-                    {% for phone_dict in phone_dict_list %}
-                        <option value="{{ phone_dict['phone'] }}">{{ phone_dict['phone'] }}</option>
-                    {% endfor %}
-                </select>
-                <input type="submit" value="Отправить"/>
-            </form>
+        <form action="{{ url_for('query_bp.query_phone_exceed_handler') }}" method="POST">
+            <label for="phone_input">Номер телефона:</label>
+            <input type="text" name="phone" id="phone_input" placeholder="Введите номер телефона" required>
+            <input type="submit" value="Отправить">
+        </form>
     </div>
     <p><a href="{{ url_for('query_bp.query_menu_handler') }}" class="button">В меню запросов</a></p>
     <p><a href="{{ url_for('main_menu_handler') }}" class="button">Вернуться в меню</a></p>
-
 </body>
 </html>

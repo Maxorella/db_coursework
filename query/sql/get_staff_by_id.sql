@@ -1,2 +1,2 @@
 SELECT staff_id, surname, position, department_id FROM staff
-WHERE staff_id = $staff_id;
+WHERE surname = '$surname' AND department_id = $department_id;

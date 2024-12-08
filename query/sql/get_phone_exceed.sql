@@ -7,7 +7,7 @@ SELECT
 FROM
     limit_exceed le
 WHERE
-    le.phone = $phone
+    le.phone = '$phone'
   AND
     le.repayment_date IS NULL
 ORDER BY
