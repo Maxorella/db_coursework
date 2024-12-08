@@ -3,8 +3,7 @@ import os
 
 from database.sql_provider import SQLProvider
 from access import group_required
-from query.model_route import staff_exceed_route, fetch_id_phone, fetch_all_staff, fetch_id_staff, fetch_all_phones, \
-    fetch_staff_exceed, fetch_phone_exceed
+from query.model_route import model_route_query_staff_phone, model_route_query_phone_exceed, model_route_query_staff_exceed
 
 query_blueprint = Blueprint(
     'query_bp',
@@ -34,10 +33,7 @@ def query_staff_phone_handler():
         surname = request.form.get('surname')
         department_id = request.form.get('department_id')
         user_input = (surname, department_id)
-        staff_info, err_mes = fetch_id_staff(conf, provider, user_input)
-        if err_mes != '':
-            return redirect(url_for('query_bp.query_menu_handler', message=err_mes))
-        result, err_mes = fetch_id_phone(conf, provider, staff_info['staff_id'])
+        staff_info, result, err_mes = model_route_query_staff_phone(conf, provider, user_input)
         if err_mes != '':
             return redirect(url_for('query_bp.query_menu_handler', message=err_mes))
         else:
@@ -52,7 +48,7 @@ def query_phone_exceed_handler():
         return render_template("query_phone_exceed.html")
     if request.method == 'POST':
         phone = request.form.get('phone')
-        result, err_mes = fetch_phone_exceed(conf, provider, phone)
+        result, err_mes = model_route_query_phone_exceed(conf, provider, phone)
         if err_mes != '':
             return redirect(url_for('query_bp.query_menu_handler', message=err_mes))
         else:
@@ -70,10 +66,7 @@ def query_staff_exceed_handler():
         surname = request.form.get('surname')
         department_id = request.form.get('department_id')
         user_input = (surname, department_id)
-        staff_info, err_mes = fetch_id_staff(conf, provider, user_input)
-        if err_mes != '':
-            return redirect(url_for('query_bp.query_staff_exceed_handler', message=err_mes))
-        result, err_mes = fetch_staff_exceed(conf, provider, staff_info['staff_id'])
+        staff_info, result, err_mes = model_route_query_staff_exceed(conf, provider, user_input)
         if err_mes != '':
             return redirect(url_for('query_bp.query_staff_exceed_handler', message=err_mes))
         else:
