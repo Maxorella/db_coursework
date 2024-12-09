@@ -2,7 +2,6 @@ from flask import Blueprint, request, render_template, redirect, session, url_fo
 import os
 
 from auth.model_route import auth_route
-from auth.select import select_user
 from database.sql_provider import SQLProvider
 
 auth_blueprint = Blueprint(
