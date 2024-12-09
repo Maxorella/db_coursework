@@ -23,7 +23,10 @@
         <label for="reportType" class="form-label">Выберите вид отчета:</label>
         <select class="form-select" id="reportType" name="report_type" required>
             <option value="" disabled selected>Выберите из списка...</option>
-            <option value="1">Отчет по превышениям лимитов</option>
+            {% for report in reports %}
+                <option value={{report[0]}}>{{report[1]}}</option>
+            {% endfor %}
+
         </select>
     </div>
 

@@ -1,1 +1,0 @@
-CALL add_phone_summ("$phone", "$amount", "$year", "$month");

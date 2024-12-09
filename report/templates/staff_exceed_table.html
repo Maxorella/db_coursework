@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отчет</title>
+    <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <div class="container">
+        <h1>{{report_type[1]}} за {{month}}.{{year}}</h1>
+            <table>
+                <thead>
+                    <tr>
+                        {% for schema_elem in schema_list %}
+                        <th>{{schema_elem}}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for report_list in report_list_list %}
+                        <tr>
+                            {% for report_elem in report_list %}
+                            <td>{{ report_elem }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    </div>
+    <p><a href="{{ url_for('report_bp.get_report_handler') }}" class="button">Посмотреть ещё отчет</a></p>
+    <p><a href="{{ url_for('main_menu_handler') }}" class="button">Вернуться в меню</a></p>
+
+</body>
+</html>

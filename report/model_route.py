@@ -1,19 +1,24 @@
 from database.call import call
+from database.select import select_list
 
-def create_report_exceed(month, year, db_config, sql_provider):
-    error_message = ''
-    _sql = sql_provider.get('create_report.sql', year=year, month=month)
-
-    ok = call(db_config, _sql)
+def route_create_report(month, year, conf, provider, report_conf):
+    month = int(month)
+    year = int(year)
+    _sql = provider.get(report_conf[2], year=year, month=month)
+    print(_sql)
+    ok = call(conf, _sql)
+    err_mes=''
     if not ok:
-        error_message = 'Ошибка во время выполнения запроса!'
-    return error_message
+        err_mes = 'Ошибка во время выполнения запроса!'
+    return err_mes
 
-
-def route_create_exceed_report(month, year, db_config, sql_provider):
+def route_get_report(month, year, conf, provider, report_conf):
 
     month = int(month)
     year = int(year)
-
-    err_mes = create_report_exceed(month, year, db_config, sql_provider)
-    return err_mes
+    _sql = provider.get(report_conf[3], year=year, month=month)
+    print(_sql)
+    result, schema, err = select_list(conf, _sql)
+    if err != '':
+        err = 'Ошибка во время выполнения запроса!'
+    return result, schema, err
