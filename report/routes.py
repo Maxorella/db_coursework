@@ -27,7 +27,6 @@ def create_report_handler():
         report_type = int(request.form.get('report_type'))
         month = request.form.get('month')
         year = request.form.get('year')
-        # TODO такой отчет уже существует
         err = route_create_report(month, year, conf, provider, report_conf[report_type])
         if not err:
             return render_template('success.html')
