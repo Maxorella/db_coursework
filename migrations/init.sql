@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS staff;
 DROP TABLE IF EXISTS bcc;
 DROP TABLE IF EXISTS limit_exceed;
 DROP TABLE IF EXISTS exceed_report;
+DROP TABLE IF EXISTS paid_exceed_report;
 
 -- пользователи
 CREATE TABLE IF NOT EXISTS user (
@@ -100,6 +101,16 @@ CREATE TABLE IF NOT EXISTS exceed_report (
     FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
 );
 
+CREATE TABLE IF NOT EXISTS paid_exceed_report (
+    staff_id INT NOT NULL,
+    surname VARCHAR(100) NOT NULL,
+    department_id INT NOT NULL,
+    total_paid_amount DECIMAL(15, 2) NOT NULL,
+    report_month INT NOT NULL,
+    report_year INT NOT NULL,
+    PRIMARY KEY (staff_id, report_month, report_year),
+    FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
+);
 
 -- Вставка пользователей для администраторов
 INSERT INTO user (user_id, login, user_group, password)
@@ -205,12 +216,26 @@ VALUES
     ('89051544135', 150.00, 10, 2024),  -- превышение для сотрудника 9
     ('89051544136', 200.00, 10, 2024);  -- превышение для сотрудника 10
 
+
+INSERT INTO limit_exceed (phone, exceed_amount, exceed_month, exceed_year, repayment_date)
+VALUES
+    ('89051544127', 50.00, 12, 2024, '2024-12-01'),   -- превышение для сотрудника 1
+    ('89051544128', 100.00, 12, 2024, '2024-12-05'),  -- превышение для сотрудника 2
+    ('89051544129', 150.00, 12, 2024, '2024-12-10'),  -- превышение для сотрудника 3
+    ('89051544130', 200.00, 12, 2024, '2024-12-15'),  -- превышение для сотрудника 4
+    ('89051544131', 50.00, 12, 2024, '2024-12-20'),   -- превышение для сотрудника 5
+    ('89051544132', 100.00, 12, 2024, '2024-12-22'),  -- превышение для сотрудника 6
+    ('89051544133', 300.00, 12, 2024, '2024-12-25'),  -- превышение для сотрудника 7
+    ('89051544134', 400.00, 12, 2024, '2024-12-27'),  -- превышение для сотрудника 8
+    ('89051544135', 150.00, 12, 2024, '2024-12-28'),  -- превышение для сотрудника 9
+    ('89051544136', 200.00, 12, 2024, '2024-12-30');  -- превышение для сотрудника 10
+
 SET foreign_key_checks = 1;
 
 
 DELIMITER $$
 
-CREATE PROCEDURE create_or_update_exceed_report(
+CREATE PROCEDURE create_exceed_report(
     IN p_month INT,
     IN p_year INT
 )
@@ -253,6 +278,57 @@ BEGIN
             INSERT INTO exceed_report (staff_id, total_exceed_amount, report_month, report_year)
             VALUES (v_staff_id, v_total_exceed_amount, p_month, p_year);
         END IF;
+    END LOOP;
+
+    -- Закрываем курсор
+    CLOSE report_cursor;
+END$$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+CREATE PROCEDURE create_paid_exceed_report(
+    IN p_month INT,
+    IN p_year INT
+)
+BEGIN
+    DECLARE done INT DEFAULT 0;
+    DECLARE v_staff_id INT;
+    DECLARE v_surname VARCHAR(100);
+    DECLARE v_department_id INT;
+    DECLARE v_total_paid_amount DECIMAL(15, 2);
+
+    -- Курсор для выборки данных по выплаченным превышениям
+    DECLARE report_cursor CURSOR FOR
+        SELECT
+            s.staff_id,
+            s.surname,
+            s.department_id,
+            SUM(le.exceed_amount) AS total_paid_amount
+        FROM limit_exceed le
+        JOIN bcc b ON le.phone = b.phone
+        JOIN staff s ON b.staff_id = s.staff_id
+        WHERE le.repayment_date IS NOT NULL
+          AND MONTH(le.repayment_date) = p_month
+          AND YEAR(le.repayment_date) = p_year
+        GROUP BY s.staff_id, s.surname, s.department_id;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+    -- Открываем курсор
+    OPEN report_cursor;
+
+    read_loop: LOOP
+        FETCH report_cursor INTO v_staff_id, v_surname, v_department_id, v_total_paid_amount;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        -- Вставляем новую запись
+        INSERT INTO paid_exceed_report (staff_id, surname, department_id, total_paid_amount, report_month, report_year)
+        VALUES (v_staff_id, v_surname, v_department_id, v_total_paid_amount, p_month, p_year);
     END LOOP;
 
     -- Закрываем курсор

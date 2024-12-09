@@ -1,3 +1,4 @@
 [
-   [0, "Отчет о неоплаченных превышениях сотрудников", "create_exceed_report.sql", "get_exceed_report.sql"]
+   [0, "Отчет о неоплаченных превышениях сотрудников", "create_exceed_report.sql", "get_exceed_report.sql"],
+   [1, "Отчет о оплаченных превышениях сотрудников", "create_paid_exceed_report.sql", "get_paid_exceed_report.sql"]
 ]

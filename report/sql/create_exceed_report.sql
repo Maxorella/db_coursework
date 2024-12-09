@@ -1,1 +1,1 @@
-CALL create_or_update_exceed_report($month, $year);
+CALL create_exceed_report($month, $year);

@@ -27,11 +27,12 @@ def create_report_handler():
         report_type = int(request.form.get('report_type'))
         month = request.form.get('month')
         year = request.form.get('year')
+        # TODO такой отчет уже существует
         err = route_create_report(month, year, conf, provider, report_conf[report_type])
         if not err:
             return render_template('success.html')
         else:
-            return redirect(url_for('report_bp.report_handler', message=err))
+            return redirect(url_for('report_bp.create_report_handler', message=err))
 
 @report_blueprint.route('/get_report', methods=['GET', 'POST'])
 @group_required
