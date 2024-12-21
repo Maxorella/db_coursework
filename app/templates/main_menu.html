@@ -3,32 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Меню</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='main_menu.css') }}">
+    <title>Главное меню</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main_menu_styles.css') }}">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>{{ hello_sign }}</h1>
-            {% if message %}
-            <h1>{{ message }}</h1>
-            {% endif %}
-        </header>
 
+    <header>
+        {% if message %}
+        <div class="message">
+            <h1>{{ message }}</h1>
+        </div>
+        {% endif %}
+    </header>
+
+    <div class="container">
+        <section>
+            <p>Выберите пункт меню для продолжения.</p>
+        </section>
         <nav>
             <ul class="menu">
                 <li><a href="{{ url_for('auth_bp.auth_handler') }}">Авторизация</a></li>
+                <li><a href="">Управление сотрудниками</a></li>
                 <li><a href="{{ url_for('report_bp.create_report_handler') }}">Создание отчета</a></li>
                 <li><a href="{{ url_for('report_bp.get_report_handler') }}">Просмотр отчета</a></li>
                 <li><a href="{{ url_for('query_bp.query_menu_handler') }}">Запросы</a></li>
                 <li><a href="{{ url_for('exit_handler') }}">Выход</a></li>
             </ul>
         </nav>
-
-        <section>
-            <h2>Что вы хотите сделать?</h2>
-            <p>Выберите пункт меню для продолжения.</p>
-        </section>
     </div>
+
 </body>
 </html>

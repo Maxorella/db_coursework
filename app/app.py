@@ -1,13 +1,9 @@
 import json
-import os
-
-from flask import Flask
-
+from flask import Flask, request
 from auth.routes import auth_blueprint
 from query.routes import query_blueprint
 from report.routes import report_blueprint
-
-from flask import request, render_template, session
+from flask import render_template, session
 
 app = Flask(__name__)
 app.secret_key = 'super secret key'
@@ -23,20 +19,21 @@ app.register_blueprint(auth_blueprint, url_prefix='/auth')
 app.register_blueprint(query_blueprint, url_prefix='/query')
 app.register_blueprint(report_blueprint, url_prefix='/report')
 
+
 @app.route('/')
 def main_menu_handler():
-    hello_sign = 'Авторизуйтесь, чтобы продолжить!'
+    message = 'Авторизуйтесь, чтобы продолжить!'
     if 'user_group' in session:
         user_role = session.get('user_group')
-        hello_sign = f'Вы авторизованы как {user_role}'
-    return render_template('main_menu.html', hello_sign=hello_sign)
-
+        message = f'Вы авторизованы как {user_role}'
+    return render_template('main_menu.html', message=message)
 
 
 @app.route('/exit')
 def exit_handler():
     session.clear()
     return render_template('exit.html')
+
 
 @app.route('/no_access')
 def no_access_handler():
