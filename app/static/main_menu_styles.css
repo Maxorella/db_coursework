@@ -10,16 +10,6 @@ body {
     background-color: #f4f4f9;
 }
 
-.hello-sign {
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.hello-sign h1 {
-    font-size: 2.5em;
-    color: #333;
-}
-
 .container {
     text-align: center;
     background-color: #ffffff;
