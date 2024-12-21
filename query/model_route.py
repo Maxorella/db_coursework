@@ -1,4 +1,25 @@
-from database.select import select_dict
+from database.select import select_dict, select_list
+
+
+def model_route_query_staff_phone(conf, provider, surname, department_id):
+    _sql = provider.get('get_staff_by_surname_department.sql', surname=surname, department_id=department_id)
+    staff, error = select_dict(conf, _sql)
+
+    if error == "Cursor not created":
+        return None, None, "Произошла ошибка при подключении к базе данных!"
+    if error.startswith("Error executing SQL query:"):
+        return None, None, "Возникла ошибка при выполнении запроса!"
+
+    _sql = provider.get('get_staff_phones.sql', surname=surname, department_id=department_id)
+    phones_dict_list, error = select_dict(conf, _sql)
+
+    if error == "Cursor not created":
+        return None, None, "Произошла ошибка при подключении к базе данных!"
+    if error.startswith("Error executing SQL query:"):
+        return None, None, "Возникла ошибка при выполнении запроса!"
+
+    return staff, phones_dict_list, error
+
 
 def model_route_query_phone_exceed(db_config, sql_provider, phone):
     _sql = sql_provider.get('get_phone_exceed.sql', phone=phone)
@@ -7,26 +28,15 @@ def model_route_query_phone_exceed(db_config, sql_provider, phone):
         err = 'Ошибка во время выполнения запроса!'
     return result, err
 
-def model_route_query_staff_exceed(conf, provider, user_input):
-    _sql = provider.get('get_staff_by_surname_department.sql', surname=user_input[0], department_id=user_input[1])
+
+def model_route_query_staff_exceed(conf, provider, surname, department_id):
+    _sql = provider.get('get_staff_by_surname_department.sql', surname=surname, department_id=department_id)
     staff_info, err = select_dict(conf, _sql)
     staff_info = staff_info[0]
-    if err!='':
+    if err != '':
         return None, None, 'Во время поиска сотрудника произошла ошибка!'
     _sql = provider.get('get_staff_exceed.sql', staff_id=staff_info['staff_id'])
     result, err = select_dict(conf, _sql)
-    if err!='':
+    if err != '':
         return None, None, 'Во время поиска телефона сотрудника произошла ошибка!'
     return staff_info, result, err
-
-def model_route_query_staff_phone(conf, provider, surname, department_id):
-    _sql = provider.get('get_staff_by_surname_department.sql', surname=surname, department_id=department_id)
-    staff, err = select_dict(conf, _sql)
-    if err != '':
-        return None, None, 'Ошибка во время поиска сотрудника!'
-
-    _sql = provider.get('get_staff_phones.sql', surname=surname, department_id=department_id)
-    phones_dict_list, err = select_dict(conf, _sql)
-    if err != '':
-        return None, None, 'Ошибка во время выполнения запроса!'
-    return staff, phones_dict_list, err
