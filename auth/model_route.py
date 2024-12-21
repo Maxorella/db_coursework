@@ -1,11 +1,18 @@
-from database.select import select_list
+from database.select import select_list, select_dict
 
 
-def auth_route(request, provider, conf):
-    login = request.form.get('login', '')  # логин с формы
-    password = request.form.get('password', '')  # пароль с формы
+def auth_route(login, password, provider, conf):
 
-    sql = provider.get('select_user.sql', login=login, password=password)  # запрос (sql)
+    sql = provider.get('select_user.sql', login=login, password=password)
+    result, error = select_dict(conf, sql)
 
-    result, _, error = select_list(conf, sql)  # модель
+    if error == "Cursor not created":
+        return dict(), "Произошла ошибка при подключении к базе данных!"
+
+    if error.startswith("Error executing SQL query:"):
+        return dict(), "Возникла ошибка при выполнении запроса!"
+
+    if not result and error == '':
+        return result, "Неправильный логин или пароль!"
+
     return result, error

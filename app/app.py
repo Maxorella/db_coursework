@@ -22,10 +22,12 @@ app.register_blueprint(report_blueprint, url_prefix='/report')
 
 @app.route('/')
 def main_menu_handler():
-    message = 'Авторизуйтесь, чтобы продолжить!'
-    if 'user_group' in session:
-        user_role = session.get('user_group')
-        message = f'Вы авторизованы как {user_role}'
+    message = request.args.get('message')
+    if message is None:
+        message = 'Авторизуйтесь, чтобы продолжить!'
+        if 'user_group' in session:
+            user_role = session.get('user_group')
+            message = f'Вы авторизованы как {user_role}'
     return render_template('main_menu.html', message=message)
 
 
