@@ -34,10 +34,11 @@
                 </tbody>
             </table>
         {% endif %}
+
+        <p><a href="{{ url_for('query_bp.query_menu_handler') }}" class="button">В меню запросов</a></p>
+        <p><a href="{{ url_for('main_menu_handler') }}" class="button">В главное меню</a></p>
     </div>
-    <p><a href="{{ url_for('query_bp.query_phone_exceed_handler') }}" class="button">Ещё такой запрос</a></p>
-    <p><a href="{{ url_for('query_bp.query_menu_handler') }}" class="button">В меню запросов</a></p>
-    <p><a href="{{ url_for('main_menu_handler') }}" class="button">Вернуться в меню</a></p>
+
 
 </body>
 </html>

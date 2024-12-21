@@ -16,7 +16,7 @@ body {
     border-radius: 10px;
     padding: 30px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 350px;
+    width: 400px;
 }
 
 h1 {
@@ -25,20 +25,23 @@ h1 {
     margin-bottom: 20px;
 }
 
-.message {
-    color: #e63946; /* Красный цвет для сообщений */
+form label {
     font-size: 1em;
-    margin-bottom: 20px;
+    color: #333;
+    display: block;
+    margin: 10px 0 5px;
+    text-align: left;
 }
 
 form input[type="text"],
-form input[type="password"] {
+form input[type="number"] {
     width: calc(100% - 20px);
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 1em;
+    box-sizing: border-box;
 }
 
 form input[type="submit"] {
@@ -59,14 +62,16 @@ form input[type="submit"]:hover {
 }
 
 .button {
-    display: inline-block;
+    display: block;
     text-decoration: none;
     padding: 10px 20px;
-    font-size: 1.2em;
+    font-size: 1.1em;
     color: #333;
     border: 2px solid #333;
     border-radius: 5px;
     transition: background-color 0.3s ease, color 0.3s ease;
+    text-align: center;
+    margin: 10px 0;
 }
 
 .button:hover {

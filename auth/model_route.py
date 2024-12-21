@@ -15,4 +15,7 @@ def auth_route(login, password, provider, conf):
     if not result and error == '':
         return result, "Неправильный логин или пароль!"
 
+    if error != '':
+        return dict(), error
+
     return result, error

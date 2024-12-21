@@ -17,7 +17,11 @@ provider = SQLProvider(os.path.join(os.path.dirname(__file__), 'sql'))
 @query_blueprint.route('/', methods=['GET'])
 @group_required
 def query_menu_handler():
-    return render_template("query_menu.html")
+    message = request.args.get('message')
+    if message:
+        return render_template("query_menu.html", message=message)
+    else:
+        return render_template("query_menu.html")
 
 
 @query_blueprint.route('/query_staff_phone', methods=['GET', 'POST'])
@@ -40,7 +44,7 @@ def query_staff_phone_handler():
         if error != '':
             return redirect(url_for('query_bp.query_menu_handler', message=error))
         else:
-            return render_template("query_staff_phone_result.html", staff_info=staff_info, result=result)
+            return render_template("query_staff_phone_result.html", staff_info=staff_info[0], result=result)
 
 
 @query_blueprint.route('/query_phone_exceed', methods=['GET', 'POST'])

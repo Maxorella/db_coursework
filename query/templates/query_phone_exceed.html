@@ -4,15 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Введите телефон</title>
-    <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='query_phone_exceed.css') }}" rel="stylesheet" type="text/css">
 </head>
 <body>
     <div class="container">
-        {% if message %}
-            <div class="message">
-                <p>{{ message }}</p>
-            </div>
-        {% endif %}
         <h1>Введите номер телефона для поиска неоплаченных превышений:</h1>
 
         <form action="{{ url_for('query_bp.query_phone_exceed_handler') }}" method="POST">
@@ -20,8 +15,9 @@
             <input type="text" name="phone" id="phone_input" placeholder="Введите номер телефона" required>
             <input type="submit" value="Отправить">
         </form>
+        <p><a href="{{ url_for('query_bp.query_menu_handler') }}" class="button">В меню запросов</a></p>
+        <p><a href="{{ url_for('main_menu_handler') }}" class="button">В главное меню</a></p>
     </div>
-    <p><a href="{{ url_for('query_bp.query_menu_handler') }}" class="button">В меню запросов</a></p>
-    <p><a href="{{ url_for('main_menu_handler') }}" class="button">Вернуться в меню</a></p>
+
 </body>
 </html>

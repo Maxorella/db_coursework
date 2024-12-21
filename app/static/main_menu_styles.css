@@ -60,12 +60,12 @@ nav .menu li a:active {
     color: #ffffff;
 }
 
-nav .menu li a[href*="exit_handler"] {
+nav .menu li a[href*="exit"] {
     border-color: #e63946;
     color: #e63946;
 }
 
-nav .menu li a[href*="exit_handler"]:hover {
+nav .menu li a[href*="exit"]:hover {
     background-color: #e63946;
     color: #ffffff;
 }
