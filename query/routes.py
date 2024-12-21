@@ -8,8 +8,7 @@ from query.model_route import model_route_query_staff_phone, model_route_query_p
 query_blueprint = Blueprint(
     'query_bp',
     __name__,
-    template_folder='templates',
-    static_folder=''
+    template_folder='templates'
 )
 
 provider = SQLProvider(os.path.join(os.path.dirname(__file__), 'sql'))
@@ -18,8 +17,7 @@ provider = SQLProvider(os.path.join(os.path.dirname(__file__), 'sql'))
 @query_blueprint.route('/', methods=['GET'])
 @group_required
 def query_menu_handler():
-    message = request.args.get('message')
-    return render_template("query_menu.html", message=message)
+    return render_template("query_menu.html")
 
 
 @query_blueprint.route('/query_staff_phone', methods=['GET', 'POST'])
@@ -29,11 +27,11 @@ def query_staff_phone_handler():
 
     if request.method == 'GET':
         return render_template("query_staff_phone.html")
+
     if request.method == 'POST':
         surname = request.form.get('surname')
         department_id = request.form.get('department_id')
-        user_input = (surname, department_id)
-        staff_info, result, err_mes = model_route_query_staff_phone(conf, provider, user_input)
+        staff_info, result, err_mes = model_route_query_staff_phone(conf, provider, surname, department_id)
         if err_mes != '':
             return redirect(url_for('query_bp.query_menu_handler', message=err_mes))
         else:

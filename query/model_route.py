@@ -19,14 +19,13 @@ def model_route_query_staff_exceed(conf, provider, user_input):
         return None, None, 'Во время поиска телефона сотрудника произошла ошибка!'
     return staff_info, result, err
 
-def model_route_query_staff_phone(conf, provider, user_input):
-    surname, department_id = user_input[0], user_input[1]
+def model_route_query_staff_phone(conf, provider, surname, department_id):
     _sql = provider.get('get_staff_by_surname_department.sql', surname=surname, department_id=department_id)
     staff, err = select_dict(conf, _sql)
     if err != '':
         return None, None, 'Ошибка во время поиска сотрудника!'
 
-    _sql = provider.get('get_staff_phones.sql', surname=user_input[0], department_id=user_input[1])
+    _sql = provider.get('get_staff_phones.sql', surname=surname, department_id=department_id)
     phones_dict_list, err = select_dict(conf, _sql)
     if err != '':
         return None, None, 'Ошибка во время выполнения запроса!'
