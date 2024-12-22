@@ -1,4 +1,4 @@
-from database.select import select_list, select_dict
+from database.select import select_list, select_dict, delete
 
 
 def route_get_active_staff(provider, conf):
@@ -56,3 +56,19 @@ def route_get_phones_by_staff_id(provider, conf, staff_id):
         return list(), list(), error
 
     return result, schema, error
+
+
+def route_delete_phone(provider, conf, phone):
+    sql = provider.get('delete_phone.sql', phone=phone)
+    error = delete(conf, sql)
+
+    if error == "Cursor not created":
+        return "Произошла ошибка при подключении к базе данных!"
+
+    if error.startswith("Error executing SQL query:"):
+        return "Возникла ошибка при выполнении запроса!"
+
+    if error != '':
+        return error
+
+    return ''

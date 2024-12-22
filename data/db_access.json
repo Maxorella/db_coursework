@@ -6,5 +6,6 @@
     "query_bp.query_staff_exceed_handler", "report_bp.get_report_handler"],
 
   "админ": ["auth_bp.auth_handler", "report_bp.create_report_handler",
-    "report_bp.get_report_handler", "editor_bp.staff_menu_editor_handler", "editor_bp.staff_editor_handler"]
+    "report_bp.get_report_handler", "editor_bp.staff_menu_editor_handler", "editor_bp.staff_editor_handler",
+    "editor_bp.delete_phone_handler"]
 }

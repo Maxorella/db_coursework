@@ -30,3 +30,19 @@ def select_dict(db_config: dict, _sql: str):
         result_dict.append(dict(zip(schema, item)))
     return result_dict, ''
 
+
+def delete(db_config: dict, _sql: str):
+    err = ''
+    with DBContextManager(db_config) as cursor:
+        if cursor is None:
+            err = 'Cursor not created'
+            raise ValueError("Cursor not created")
+        else:
+            try:
+                cursor.execute(_sql)
+                cursor.connection.commit()
+            except Exception as e:
+                err = f"Error executing SQL query: {e}"
+                cursor.connection.rollback()
+                return err
+    return ''

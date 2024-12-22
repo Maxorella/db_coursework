@@ -8,6 +8,12 @@
 </head>
 <body>
     <div class="container">
+        {% if message %}
+        <div class="message">
+            <h1>{{ message }}</h1>
+        </div>
+        {% endif %}
+
         <h1>Сотрудник:</h1>
             <table>
                 <thead>
@@ -38,6 +44,7 @@
                         {% for schema_elem in schema_phones_list %}
                         <th>{{schema_elem}}</th>
                         {% endfor %}
+                        <th>Удалить</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,6 +53,11 @@
                             {% for phone_elem in phones_list %}
                             <td>{{ phone_elem }}</td>
                             {% endfor %}
+                            <td>
+                                <form action="{{ url_for('editor_bp.delete_phone_handler',staff_id=staff_list_info[0][0], phone=phones_list[0]) }}" method="POST">
+                                <button type="submit" class="button">Удалить</button>
+                                </form>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
