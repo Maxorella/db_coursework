@@ -30,6 +30,3 @@ def select_dict(db_config: dict, _sql: str):
         result_dict.append(dict(zip(schema, item)))
     return result_dict, ''
 
-
-
-

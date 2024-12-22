@@ -58,7 +58,8 @@ def query_phone_exceed_handler():
     if request.method == 'POST':
         phone = request.form.get('phone')
         # phone_exceed
-        # [{'exceed_amount': Decimal('100.00'), 'exceed_month': 10, 'exceed_year': 2024, 'phone': '89051544125', 'repayment_date': None}]
+        # [{'exceed_amount': Decimal('100.00'), 'exceed_month': 10, 'exceed_year': 2024,
+        # 'phone': '89051544125', 'repayment_date': None}]
         phone_exceed, error = model_route_query_phone_exceed(conf, provider, phone)
         if error != '':
             return redirect(url_for('query_bp.query_menu_handler', message=error))
@@ -80,11 +81,13 @@ def query_staff_exceed_handler():
         # staff_info
         # {'department_id': 1, 'position': 'Системный администратор', 'staff_id': 1, 'surname': 'Admin1'}
         # result
-        # [{'exceed_amount': Decimal('200.00'), 'exceed_month': 10, 'exceed_year': 2024, 'phone': '89051544123', 'repayment_date': None}]
+        # [{'exceed_amount': Decimal('200.00'), 'exceed_month': 10, 'exceed_year': 2024,
+        # 'phone': '89051544123', 'repayment_date': None}]
 
         staff_info, result, error = model_route_query_staff_exceed(conf, provider, surname, department_id)
 
         if error != '':
             return redirect(url_for('query_bp.query_staff_exceed_handler', message=error))
         else:
-            return render_template("query_staff_exceed_result.html", staff=staff_info, staff_exceed=result, result=result)
+            return render_template("query_staff_exceed_result.html",
+                                   staff=staff_info, staff_exceed=result, result=result)

@@ -1,6 +1,6 @@
 from pymysql import connect
-
 from pymysql.err import OperationalError
+
 
 class DBContextManager:
 
@@ -24,7 +24,8 @@ class DBContextManager:
             print(exc_type)
         if self.cursor:
             if exc_type:
-            # если на этапе выполнения произошли ошибки, но курсор при этом открыт, то скорее всего это транзакция и её надо откатить
+                # если на этапе выполнения произошли ошибки, но курсор при этом открыт,
+                # то скорее всего это транзакция и её надо откатить
                 self.conn.rollback()
             else:
                 self.conn.commit()
