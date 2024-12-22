@@ -120,3 +120,19 @@ def route_edit_staff(provider, conf, staff_id, surname, address, birthday, posit
         return error
 
     return ''
+
+
+def route_delete_staff(provider, conf, staff_id):
+    sql = provider.get('delete_staff.sql', staff_id=staff_id)
+    error = delete_insert(conf, sql)
+
+    if error == "Cursor not created":
+        return "Произошла ошибка при подключении к базе данных!"
+
+    if error.startswith("Error executing SQL query:"):
+        return "Возникла ошибка при выполнении запроса!"
+
+    if error != '':
+        return error
+
+    return ''

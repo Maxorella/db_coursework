@@ -4,7 +4,7 @@ from database.sql_provider import SQLProvider
 from access import group_required
 from report.model_route import route_get_report, route_create_report
 from staff_edit.model_route import route_get_active_staff, route_get_staff_by_id, route_get_phones_by_staff_id, \
-    route_delete_phone, route_add_phone, route_edit_staff
+    route_delete_phone, route_add_phone, route_edit_staff, route_delete_staff
 from utils import month_to_string
 
 editor_blueprint = Blueprint(
@@ -31,7 +31,7 @@ def staff_menu_editor_handler():
         pass
         # Создать сотрудника
 
-@editor_blueprint.route('/edit_staff', methods=['GET'])
+@editor_blueprint.route('/staff_menu', methods=['GET'])
 @group_required
 def staff_editor_handler():
     conf = current_app.config['db_config']
@@ -82,6 +82,7 @@ def add_phone_handler():
 
         return redirect(url_for('editor_bp.staff_editor_handler', staff_id=staff_id))  # TODO message
 
+
 @editor_blueprint.route('/edit_staff', methods=['POST'])
 @group_required
 def edit_staff_handler():
@@ -102,3 +103,23 @@ def edit_staff_handler():
         return redirect(url_for('main_menu_handler', message=error))
 
     return redirect(url_for('editor_bp.staff_editor_handler', staff_id=staff_id))  # TODO message
+
+
+@editor_blueprint.route('/delete_staff', methods=['GET','POST'])
+@group_required
+def delete_staff_handler():
+    conf = current_app.config['db_config']
+
+    staff_id = int(request.args.get('staff_id'))
+    error = route_delete_staff(provider, conf, staff_id)
+
+    if error != '': #TODO
+        return redirect(url_for('main_menu_handler', message=error))
+
+    return redirect(url_for('editor_bp.staff_editor_handler', staff_id=staff_id))  # TODO message
+
+
+@editor_blueprint.route('/create_staff', methods=['POST'])
+@group_required
+def create_staff_handler():
+    pass
