@@ -103,3 +103,20 @@ def route_add_phone(provider, conf, staff_id, phone, money_limit):
         return error
 
     return ''
+
+
+def route_edit_staff(provider, conf, staff_id, surname, address, birthday, position, hire_date, department_id):
+    sql = provider.get('edit_staff.sql', staff_id=staff_id, surname=surname, address=address, birthday=birthday,
+                       position=position, hire_date=hire_date, department_id=department_id)
+    error = delete_insert(conf, sql)
+
+    if error == "Cursor not created":
+        return "Произошла ошибка при подключении к базе данных!"
+
+    if error.startswith("Error executing SQL query:"):
+        return "Возникла ошибка при выполнении запроса!"
+
+    if error != '':
+        return error
+
+    return ''

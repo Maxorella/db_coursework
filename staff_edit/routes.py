@@ -4,7 +4,7 @@ from database.sql_provider import SQLProvider
 from access import group_required
 from report.model_route import route_get_report, route_create_report
 from staff_edit.model_route import route_get_active_staff, route_get_staff_by_id, route_get_phones_by_staff_id, \
-    route_delete_phone, route_add_phone
+    route_delete_phone, route_add_phone, route_edit_staff
 from utils import month_to_string
 
 editor_blueprint = Blueprint(
@@ -31,7 +31,7 @@ def staff_menu_editor_handler():
         pass
         # Создать сотрудника
 
-@editor_blueprint.route('/edit_staff', methods=['GET', 'POST'])
+@editor_blueprint.route('/edit_staff', methods=['GET'])
 @group_required
 def staff_editor_handler():
     conf = current_app.config['db_config']
@@ -48,8 +48,8 @@ def staff_editor_handler():
         return render_template('staff_and_phone_editor.html',
                                schema_staff_list=schema_staff, staff_list_info=staff_info,
                                schema_phones_list=schema_phone, phones_list_list=phones_list)
-    if request.method == 'POST':
-        pass
+    # if request.method == 'POST':
+    #   pass
         # Редактировать сотрудника
 
 @editor_blueprint.route('/delete_phone', methods=['POST'])
@@ -81,3 +81,24 @@ def add_phone_handler():
             return redirect(url_for('main_menu_handler', message=error))
 
         return redirect(url_for('editor_bp.staff_editor_handler', staff_id=staff_id))  # TODO message
+
+@editor_blueprint.route('/edit_staff', methods=['POST'])
+@group_required
+def edit_staff_handler():
+    conf = current_app.config['db_config']
+
+    surname = request.form.get('surname')
+    address = request.form.get('address')
+    birthday = request.form.get('birthday')
+    position = request.form.get('position')
+    hire_date = request.form.get('hire_date')
+    department_id = request.form.get('department_id')
+
+    staff_id = int(request.args.get('staff_id'))
+    error = route_edit_staff(provider, conf, staff_id, surname, address,
+                                 birthday, position, hire_date, department_id)
+
+    if error != '': #TODO
+        return redirect(url_for('main_menu_handler', message=error))
+
+    return redirect(url_for('editor_bp.staff_editor_handler', staff_id=staff_id))  # TODO message

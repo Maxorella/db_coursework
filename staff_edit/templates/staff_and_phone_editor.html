@@ -74,6 +74,37 @@
         </form>
 
         <p><a href="{{ url_for('main_menu_handler') }}" class="button">В главное меню</a></p>
+
+
+        <h1>Редактировать сотрудника:</h1>
+        <form action="{{ url_for('editor_bp.edit_staff_handler', staff_id=staff_list_info[0][0]) }}" method="POST">
+        <div>
+            <label for="surname">Фамилия:</label>
+            <input type="text" id="surname" name="surname" value="{{ staff_list_info[0][3] }}" required>
+        </div>
+        <div>
+            <label for="address">Адрес:</label>
+            <input type="text" id="address" name="address" value="{{ staff_list_info[0][4] }}">
+        </div>
+        <div>
+            <label for="birthday">Дата рождения:</label>
+            <input type="date" id="birthday" name="birthday" value="{{ staff_list_info[0][5] }}">
+        </div>
+        <div>
+            <label for="position">Должность:</label>
+            <input type="text" id="position" name="position" value="{{ staff_list_info[0][6] }}" required>
+        </div>
+        <div>
+            <label for="hire_date">Дата найма:</label>
+            <input type="date" id="hire_date" name="hire_date" value="{{ staff_list_info[0][7] }}" required>
+        </div>
+        <div>
+            <label for="department_id">Номер отдела:</label>
+            <input type="number" id="department_id" name="department_id" value="{{ staff_list_info[0][8] }}" required>
+        </div>
+        <button type="submit" class="button">Сохранить изменения</button>
+        </form>
+
     </div>
 </body>
 </html>
