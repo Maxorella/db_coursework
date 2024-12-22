@@ -4,7 +4,7 @@ from database.sql_provider import SQLProvider
 from access import group_required
 from report.model_route import route_get_report, route_create_report
 from staff_edit.model_route import route_get_active_staff, route_get_staff_by_id, route_get_phones_by_staff_id, \
-    route_delete_phone, route_add_phone, route_edit_staff, route_delete_staff
+    route_delete_phone, route_add_phone, route_edit_staff, route_delete_staff, route_add_staff
 from utils import month_to_string
 
 editor_blueprint = Blueprint(
@@ -16,7 +16,7 @@ editor_blueprint = Blueprint(
 provider = SQLProvider(os.path.join(os.path.dirname(__file__), 'sql'))
 
 
-@editor_blueprint.route('/staff_menu', methods=['GET', 'POST'])
+@editor_blueprint.route('/staff_menu', methods=['GET'])
 @group_required
 def staff_menu_editor_handler():
     conf = current_app.config['db_config']
@@ -27,11 +27,8 @@ def staff_menu_editor_handler():
             return redirect(url_for('main_menu_handler', message=error))
 
         return render_template('staff_menu.html',schema_list=schema, staff_list_list=staff)
-    if request.method == 'POST':
-        pass
-        # Создать сотрудника
 
-@editor_blueprint.route('/staff_menu', methods=['GET'])
+@editor_blueprint.route('/staff_phone_menu', methods=['GET'])
 @group_required
 def staff_editor_handler():
     conf = current_app.config['db_config']
@@ -122,4 +119,21 @@ def delete_staff_handler():
 @editor_blueprint.route('/create_staff', methods=['POST'])
 @group_required
 def create_staff_handler():
-    pass
+    conf = current_app.config['db_config']
+    login = request.form.get('login')
+    password = request.form.get('password')
+    user_group = request.form.get('user_group')
+    surname = request.form.get('surname')
+    address = request.form.get('address')
+    birthday = request.form.get('birthday')
+    position = request.form.get('position')
+    hire_date = request.form.get('hire_date')
+    department_id = int(request.form.get('department_id'))
+
+    error = route_add_staff(provider, conf, login, password, user_group, surname, address, birthday, position,
+                            hire_date, department_id)
+
+    if error != '':  # TODO
+        return redirect(url_for('main_menu_handler', message=error))
+
+    return redirect(url_for('editor_bp.staff_menu_editor_handler'))  # TODO message

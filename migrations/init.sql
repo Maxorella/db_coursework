@@ -11,7 +11,7 @@ DROP TABLE IF EXISTS paid_exceed_report;
 
 -- пользователи
 CREATE TABLE IF NOT EXISTS user (
-    user_id INT NOT NULL,
+    user_id INT AUTO_INCREMENT,
     login VARCHAR(255) NOT NULL UNIQUE,
     user_group ENUM('сотрудник', 'руководство', 'админ') NOT NULL,
     password VARCHAR(255) NOT NULL,
@@ -115,30 +115,30 @@ CREATE TABLE IF NOT EXISTS paid_exceed_report (
 );
 
 -- Вставка пользователей для администраторов
-INSERT INTO user (user_id, login, user_group, password, status)
+INSERT INTO user (login, user_group, password, status)
 VALUES
-    (1, 'admin1', 'админ', 'password1', 'active'),
-    (2, 'admin2', 'админ', 'password2', 'active');
+    ('admin1', 'админ', 'password1', 'active'),
+    ('admin2', 'админ', 'password2', 'active');
 
 -- Вставка пользователей для руководителей
-INSERT INTO user (user_id, login, user_group, password, status)
+INSERT INTO user (login, user_group, password, status)
 VALUES
-    (3, 'management1', 'руководство', 'password1', 'active'),
-    (4, 'management2', 'руководство', 'password2', 'active');
+    ('management1', 'руководство', 'password1', 'active'),
+    ('management2', 'руководство', 'password2', 'active');
 
 -- Вставка пользователей для сотрудников
-INSERT INTO user (user_id, login, user_group, password, status)
+INSERT INTO user (login, user_group, password, status)
 VALUES
-    (5, 'employee1', 'сотрудник', 'password1', 'active'),
-    (6, 'employee2', 'сотрудник', 'password2', 'active'),
-    (7, 'employee3', 'сотрудник', 'password3', 'active'),
-    (8, 'employee4', 'сотрудник', 'password4', 'active'),
-    (9, 'employee5', 'сотрудник', 'password5', 'active'),
-    (10, 'employee6', 'сотрудник', 'password6', 'active'),
-    (11, 'employee7', 'сотрудник', 'password7', 'active'),
-    (12, 'employee8', 'сотрудник', 'password8', 'active'),
-    (13, 'employee9', 'сотрудник', 'password9', 'active'),
-    (14, 'employee10', 'сотрудник', 'password10', 'active');
+    ('employee1', 'сотрудник', 'password1', 'active'),
+    ('employee2', 'сотрудник', 'password2', 'active'),
+    ('employee3', 'сотрудник', 'password3', 'active'),
+    ('employee4', 'сотрудник', 'password4', 'active'),
+    ('employee5', 'сотрудник', 'password5', 'active'),
+    ('employee6', 'сотрудник', 'password6', 'active'),
+    ('employee7', 'сотрудник', 'password7', 'active'),
+    ('employee8', 'сотрудник', 'password8', 'active'),
+    ('employee9', 'сотрудник', 'password9', 'active'),
+    ('employee10', 'сотрудник', 'password10', 'active');
 
 -- Вставка сотрудников в таблицу staff для администраторов
 INSERT INTO staff (staff_id, surname, address, birthday, position, hire_date, department_id)
@@ -336,5 +336,40 @@ BEGIN
     -- Закрываем курсор
     CLOSE report_cursor;
 END$$
+
+DELIMITER ;
+
+
+
+
+DELIMITER //
+
+CREATE PROCEDURE add_staff (
+    IN p_login VARCHAR(255),
+    IN p_password VARCHAR(255),
+    IN p_user_group ENUM('сотрудник', 'руководство', 'админ'),
+    IN p_surname VARCHAR(100),
+    IN p_address VARCHAR(255),
+    IN p_birthday DATE,
+    IN p_position VARCHAR(100),
+    IN p_hire_date DATE,
+    IN p_department_id INT
+)
+BEGIN
+    DECLARE v_user_id INT;
+
+    -- Вставляем данные в таблицу user
+    INSERT INTO user (login, password, user_group, status)
+    VALUES (p_login, p_password, p_user_group, 'active')
+    ON DUPLICATE KEY UPDATE user_id = LAST_INSERT_ID(user_id);
+
+    -- Получаем id пользователя
+    SET v_user_id = LAST_INSERT_ID();
+
+    -- Вставляем данные в таблицу staff с user_id
+    INSERT INTO staff (staff_id, surname, address, birthday, position, hire_date, department_id)
+    VALUES (v_user_id, p_surname, p_address, p_birthday, p_position, p_hire_date, p_department_id);
+
+END //
 
 DELIMITER ;

@@ -8,5 +8,5 @@
   "админ": ["auth_bp.auth_handler", "report_bp.create_report_handler",
     "report_bp.get_report_handler", "editor_bp.staff_menu_editor_handler", "editor_bp.staff_editor_handler",
     "editor_bp.delete_phone_handler", "editor_bp.add_phone_handler", "editor_bp.edit_staff_handler",
-    "editor_bp.delete_staff_handler"]
+    "editor_bp.delete_staff_handler", "editor_bp.create_staff_handler"]
 }

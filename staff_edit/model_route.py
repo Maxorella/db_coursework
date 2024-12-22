@@ -1,3 +1,4 @@
+from database.call import call
 from database.select import select_list, select_dict, delete_insert
 
 
@@ -134,5 +135,17 @@ def route_delete_staff(provider, conf, staff_id):
 
     if error != '':
         return error
+
+    return ''
+
+
+def route_add_staff(provider, conf, login, password, user_group, surname, address, birthday, position,
+                    hire_date, department_id):
+    sql = provider.get('add_staff.sql', login=login, password=password, user_group=user_group,
+                       surname=surname, address=address, birthday=birthday, position=position,
+                       hire_date=hire_date, department_id=department_id)
+    ok = call(conf, sql)
+    if not ok:
+        return "Произошла ошибка при создании сотрудника!"
 
     return ''
