@@ -1,0 +1,90 @@
+/* General body styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f9;
+}
+
+/* Container for centering content */
+.container {
+    text-align: center;
+    background-color: #ffffff;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 600px;
+}
+
+/* Headings */
+h1 {
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Form labels */
+form label {
+    font-size: 1em;
+    color: #333;
+    display: block;
+    margin: 10px 0 5px;
+    text-align: left;
+}
+
+/* Form elements */
+form input[type="text"],
+form input[type="number"],
+form select {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+/* Submit button */
+form input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 1.1em;
+    color: #ffffff;
+    background-color: #333;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form input[type="submit"]:hover {
+    background-color: #555;
+}
+
+/* Button styles */
+.button {
+    display: block;
+    text-decoration: none;
+    padding: 10px;
+    font-size: 1.1em;
+    color: #333;
+    border: 2px solid #333;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    width: 100%; /* Ширина кнопки совпадает с формой */
+    box-sizing: border-box;
+    text-align: center;
+    margin: 10px 0;
+}
+
+.button:hover {
+    background-color: #333;
+    color: #ffffff;
+}

@@ -4,14 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Отчета нет</title>
+    <link href="{{ url_for('static', filename='main_menu_styles.css') }}" rel="stylesheet" type="text/css">
 </head>
 <body>
+    <div class="container">
     <h1>Такого отчета нет!</h1>
-    <p>
-        <a href="{{ url_for('report_bp.get_report_handler') }}">Посмотреть отчеты</a>
-    </p>
-    <p>
-        <a href="{{ url_for('main_menu_handler') }}">В главное меню</a>
-    </p>
+        <nav>
+            <ul class="menu">
+                <li><a href="{{ url_for('report_bp.get_report_handler') }}">Посмотреть отчеты</a></li>
+                <li><a href="{{ url_for('main_menu_handler') }}">В главное меню</a></li>
+            </ul>
+        </nav>
+    </div>
 </body>
 </html>

@@ -12,7 +12,7 @@ def auth_route(login, password, provider, conf):
     if error.startswith("Error executing SQL query:"):
         return dict(), "Возникла ошибка при выполнении запроса!"
 
-    if not result and error == '':
+    if len(result) == 0 and error == '':
         return result, "Неправильный логин или пароль!"
 
     if error != '':
