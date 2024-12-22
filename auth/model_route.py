@@ -1,7 +1,7 @@
 from database.select import select_list, select_dict
 
 
-def auth_route(login, password, provider, conf):
+def auth_route(provider, conf, login, password):
 
     sql = provider.get('select_user.sql', login=login, password=password)
     result, error = select_dict(conf, sql)

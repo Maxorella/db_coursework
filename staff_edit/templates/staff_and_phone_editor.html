@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отчет</title>
+    <link href="{{ url_for('static', filename='report_result.css') }}" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <div class="container">
+        <h1>Сотрудник:</h1>
+            <table>
+                <thead>
+                    <tr>
+                        {% for schema_elem in schema_staff_list[1:] %}
+                        <th>{{schema_elem}}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for staff_list in staff_list_info %}
+                        <tr>
+                            {% for staff_elem in staff_list[1:] %}
+                            <td>{{ staff_elem }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+
+
+
+        <h1>Телефоны:</h1>
+            <table>
+                <thead>
+                    <tr>
+                        {% for schema_elem in schema_phones_list %}
+                        <th>{{schema_elem}}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for phones_list in phones_list_list %}
+                        <tr>
+                            {% for phone_elem in phones_list %}
+                            <td>{{ phone_elem }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        <p><a href="{{ url_for('main_menu_handler') }}" class="button">В главное меню</a></p>
+    </div>
+</body>
+</html>

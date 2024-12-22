@@ -4,6 +4,7 @@ from auth.routes import auth_blueprint
 from query.routes import query_blueprint
 from report.routes import report_blueprint
 from flask import render_template, session
+from staff_edit.routes import editor_blueprint
 
 app = Flask(__name__)
 app.secret_key = 'super secret key'
@@ -18,6 +19,7 @@ with open('./data/report.json') as f:
 app.register_blueprint(auth_blueprint, url_prefix='/auth')
 app.register_blueprint(query_blueprint, url_prefix='/query')
 app.register_blueprint(report_blueprint, url_prefix='/report')
+app.register_blueprint(editor_blueprint, url_prefix='/editor')
 
 
 @app.route('/')

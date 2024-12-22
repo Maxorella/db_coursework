@@ -23,7 +23,7 @@
         <nav>
             <ul class="menu">
                 <li><a href="{{ url_for('auth_bp.auth_handler') }}">Авторизация</a></li>
-                <li><a href="">Управление сотрудниками</a></li>
+                <li><a href="{{ url_for('editor_bp.staff_menu_editor_handler') }}">Управление сотрудниками</a></li>
                 <li><a href="{{ url_for('report_bp.create_report_handler') }}">Создание отчета</a></li>
                 <li><a href="{{ url_for('report_bp.get_report_handler') }}">Просмотр отчета</a></li>
                 <li><a href="{{ url_for('query_bp.query_menu_handler') }}">Запросы</a></li>

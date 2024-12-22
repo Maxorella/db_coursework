@@ -9,11 +9,12 @@ auth_blueprint = Blueprint(
     template_folder='templates',
 )
 
+provider = SQLProvider(os.path.join(os.path.dirname(__file__), 'sql'))
+
 
 @auth_blueprint.route('/', methods=['GET', 'POST'])
 def auth_handler():
     conf = current_app.config['db_config']
-    provider = SQLProvider(os.path.join(os.path.dirname(__file__), 'sql'))
 
     if request.method == 'GET':  # если пользователь уже авторизован - редирект на главное меню
         if 'user_group' in session:
@@ -27,7 +28,7 @@ def auth_handler():
 
     elif request.method == 'POST':
 
-        result, err = auth_route(request.form.get('login', ''), request.form.get('password', ''), provider, conf)
+        result, err = auth_route(provider, conf, request.form.get('login', ''), request.form.get('password', ''))
 
         if result and err == '':
             session['user_id'] = result[0]['user_id']

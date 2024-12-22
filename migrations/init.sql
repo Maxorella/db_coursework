@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS user (
     login VARCHAR(255) NOT NULL UNIQUE,
     user_group ENUM('сотрудник', 'руководство', 'админ') NOT NULL,
     password VARCHAR(255) NOT NULL,
+    status ENUM('active', 'deleted'),
     PRIMARY KEY (user_id)
 );
 
@@ -36,6 +37,7 @@ CREATE TABLE IF NOT EXISTS bcc (
     phone VARCHAR(32) NOT NULL,
     money_limit DECIMAL(15,2) NOT NULL,
     staff_id INT,
+    status ENUM('active', 'deleted'),
     PRIMARY KEY (phone),
     FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
 );
@@ -113,30 +115,30 @@ CREATE TABLE IF NOT EXISTS paid_exceed_report (
 );
 
 -- Вставка пользователей для администраторов
-INSERT INTO user (user_id, login, user_group, password)
+INSERT INTO user (user_id, login, user_group, password, status)
 VALUES
-    (1, 'admin1', 'админ', 'password1'),
-    (2, 'admin2', 'админ', 'password2');
+    (1, 'admin1', 'админ', 'password1', 'active'),
+    (2, 'admin2', 'админ', 'password2', 'active');
 
 -- Вставка пользователей для руководителей
-INSERT INTO user (user_id, login, user_group, password)
+INSERT INTO user (user_id, login, user_group, password, status)
 VALUES
-    (3, 'management1', 'руководство', 'password1'),
-    (4, 'management2', 'руководство', 'password2');
+    (3, 'management1', 'руководство', 'password1', 'active'),
+    (4, 'management2', 'руководство', 'password2', 'active');
 
 -- Вставка пользователей для сотрудников
-INSERT INTO user (user_id, login, user_group, password)
+INSERT INTO user (user_id, login, user_group, password, status)
 VALUES
-    (5, 'employee1', 'сотрудник', 'password1'),
-    (6, 'employee2', 'сотрудник', 'password2'),
-    (7, 'employee3', 'сотрудник', 'password3'),
-    (8, 'employee4', 'сотрудник', 'password4'),
-    (9, 'employee5', 'сотрудник', 'password5'),
-    (10, 'employee6', 'сотрудник', 'password6'),
-    (11, 'employee7', 'сотрудник', 'password7'),
-    (12, 'employee8', 'сотрудник', 'password8'),
-    (13, 'employee9', 'сотрудник', 'password9'),
-    (14, 'employee10', 'сотрудник', 'password10');
+    (5, 'employee1', 'сотрудник', 'password1', 'active'),
+    (6, 'employee2', 'сотрудник', 'password2', 'active'),
+    (7, 'employee3', 'сотрудник', 'password3', 'active'),
+    (8, 'employee4', 'сотрудник', 'password4', 'active'),
+    (9, 'employee5', 'сотрудник', 'password5', 'active'),
+    (10, 'employee6', 'сотрудник', 'password6', 'active'),
+    (11, 'employee7', 'сотрудник', 'password7', 'active'),
+    (12, 'employee8', 'сотрудник', 'password8', 'active'),
+    (13, 'employee9', 'сотрудник', 'password9', 'active'),
+    (14, 'employee10', 'сотрудник', 'password10', 'active');
 
 -- Вставка сотрудников в таблицу staff для администраторов
 INSERT INTO staff (staff_id, surname, address, birthday, position, hire_date, department_id)
@@ -165,30 +167,30 @@ VALUES
     (14, 'Employee10', 'ул. Розы, 14', '1986-09-11', 'Юрист', '2021-12-15', 3);
 
 -- Вставка телефонов для администраторов
-INSERT INTO bcc (phone, money_limit, staff_id)
+INSERT INTO bcc (phone, money_limit, staff_id, status)
 VALUES
-    ('89051544123', 1500.00, 1),  -- телефон администратора 1
-    ('89051544124', 2000.00, 1);  -- телефон администратора 2
+    ('89051544123', 1500.00, 1, 'active'),  -- телефон администратора 1
+    ('89051544124', 2000.00, 1, 'active');  -- телефон администратора 2
 
 -- Вставка телефонов для руководителей
-INSERT INTO bcc (phone, money_limit, staff_id)
+INSERT INTO bcc (phone, money_limit, staff_id, status)
 VALUES
-    ('89051544125', 1000.00, 3),  -- телефон руководителя 1
-    ('89051544126', 1200.00, 4);  -- телефон руководителя 2
+    ('89051544125', 1000.00, 3, 'active'),  -- телефон руководителя 1
+    ('89051544126', 1200.00, 4, 'active');  -- телефон руководителя 2
 
 -- Вставка телефонов для сотрудников
-INSERT INTO bcc (phone, money_limit, staff_id)
+INSERT INTO bcc (phone, money_limit, staff_id, status)
 VALUES
-    ('89051544127', 500.00, 5),  -- телефон сотрудника 1
-    ('89051544128', 600.00, 6),  -- телефон сотрудника 2
-    ('89051544129', 700.00, 7),  -- телефон сотрудника 3
-    ('89051544130', 800.00, 8),  -- телефон сотрудника 4
-    ('89051544131', 650.00, 9),  -- телефон сотрудника 5
-    ('89051544132', 750.00, 10), -- телефон сотрудника 6
-    ('89051544133', 950.00, 11), -- телефон сотрудника 7
-    ('89051544134', 850.00, 12), -- телефон сотрудника 8
-    ('89051544135', 1200.00, 13), -- телефон сотрудника 9
-    ('89051544136', 1100.00, 14); -- телефон сотрудника 10
+    ('89051544127', 500.00, 5, 'active'),  -- телефон сотрудника 1
+    ('89051544128', 600.00, 6, 'active'),  -- телефон сотрудника 2
+    ('89051544129', 700.00, 7, 'active'),  -- телефон сотрудника 3
+    ('89051544130', 800.00, 8, 'active'),  -- телефон сотрудника 4
+    ('89051544131', 650.00, 9, 'active'),  -- телефон сотрудника 5
+    ('89051544132', 750.00, 10, 'active'), -- телефон сотрудника 6
+    ('89051544133', 950.00, 11, 'active'), -- телефон сотрудника 7
+    ('89051544134', 850.00, 12, 'active'), -- телефон сотрудника 8
+    ('89051544135', 1200.00, 13, 'active'), -- телефон сотрудника 9
+    ('89051544136', 1100.00, 14, 'active'); -- телефон сотрудника 10
 
 -- Вставка превышений лимита для администраторов
 INSERT INTO limit_exceed (phone, exceed_amount, exceed_month, exceed_year)
