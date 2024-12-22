@@ -34,9 +34,6 @@
                 </tbody>
             </table>
 
-
-
-
         <h1>Телефоны:</h1>
             <table>
                 <thead>
@@ -62,6 +59,20 @@
                     {% endfor %}
                 </tbody>
             </table>
+
+        <h1>Добавить телефон:</h1>
+        <form action="{{ url_for('editor_bp.add_phone_handler', staff_id=staff_list_info[0][0]) }}" method="POST">
+            <div>
+                <label for="phone">Номер телефона:</label>
+                <input type="text" id="phone" name="phone" required>
+            </div>
+            <div>
+                <label for="money_limit">Лимит денег:</label>
+                <input type="number" id="money_limit" name="money_limit" step="0.01" required>
+            </div>
+            <button type="submit" class="button">Добавить телефон</button>
+        </form>
+
         <p><a href="{{ url_for('main_menu_handler') }}" class="button">В главное меню</a></p>
     </div>
 </body>

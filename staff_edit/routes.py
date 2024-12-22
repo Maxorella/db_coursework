@@ -4,7 +4,7 @@ from database.sql_provider import SQLProvider
 from access import group_required
 from report.model_route import route_get_report, route_create_report
 from staff_edit.model_route import route_get_active_staff, route_get_staff_by_id, route_get_phones_by_staff_id, \
-    route_delete_phone
+    route_delete_phone, route_add_phone
 from utils import month_to_string
 
 editor_blueprint = Blueprint(
@@ -61,6 +61,22 @@ def delete_phone_handler():
         staff_id = int(request.args.get('staff_id'))
         phone = int(request.args.get('phone'))
         error = route_delete_phone(provider, conf, phone)
+        if error != '': #TODO
+            return redirect(url_for('main_menu_handler', message=error))
+
+        return redirect(url_for('editor_bp.staff_editor_handler', staff_id=staff_id))  # TODO message
+
+@editor_blueprint.route('/add_phone', methods=['POST'])
+@group_required
+def add_phone_handler():
+    conf = current_app.config['db_config']
+
+    if request.method == 'POST':
+        staff_id = int(request.args.get('staff_id'))
+        phone = int(request.form.get('phone'))
+        money_limit = int(request.form.get('money_limit'))
+        error = route_add_phone(provider, conf, staff_id, phone, money_limit)
+
         if error != '': #TODO
             return redirect(url_for('main_menu_handler', message=error))
 

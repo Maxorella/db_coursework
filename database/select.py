@@ -31,7 +31,7 @@ def select_dict(db_config: dict, _sql: str):
     return result_dict, ''
 
 
-def delete(db_config: dict, _sql: str):
+def delete_insert(db_config: dict, _sql: str):
     err = ''
     with DBContextManager(db_config) as cursor:
         if cursor is None:

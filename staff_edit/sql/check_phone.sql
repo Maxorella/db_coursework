@@ -1,0 +1,1 @@
+SELECT phone FROM bcc WHERE phone = $phone;
