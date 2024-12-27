@@ -105,8 +105,6 @@ CREATE TABLE IF NOT EXISTS exceed_report (
 
 CREATE TABLE IF NOT EXISTS paid_exceed_report (
     staff_id INT NOT NULL,
-    surname VARCHAR(100) NOT NULL,
-    department_id INT NOT NULL,
     total_paid_amount DECIMAL(15, 2) NOT NULL,
     report_month INT NOT NULL,
     report_year INT NOT NULL,
@@ -117,54 +115,54 @@ CREATE TABLE IF NOT EXISTS paid_exceed_report (
 -- Вставка пользователей для администраторов
 INSERT INTO user (login, user_group, password, status)
 VALUES
-    ('admin1', 'админ', 'password1', 'active'),
-    ('admin2', 'админ', 'password2', 'active');
+    ('admin1', 'админ', 'password', 'active'),
+    ('admin2', 'админ', 'password', 'active');
 
 -- Вставка пользователей для руководителей
 INSERT INTO user (login, user_group, password, status)
 VALUES
-    ('management1', 'руководство', 'password1', 'active'),
-    ('management2', 'руководство', 'password2', 'active');
+    ('management1', 'руководство', 'password', 'active'),
+    ('management2', 'руководство', 'password', 'active');
 
 -- Вставка пользователей для сотрудников
 INSERT INTO user (login, user_group, password, status)
 VALUES
-    ('employee1', 'сотрудник', 'password1', 'active'),
-    ('employee2', 'сотрудник', 'password2', 'active'),
-    ('employee3', 'сотрудник', 'password3', 'active'),
-    ('employee4', 'сотрудник', 'password4', 'active'),
-    ('employee5', 'сотрудник', 'password5', 'active'),
-    ('employee6', 'сотрудник', 'password6', 'active'),
-    ('employee7', 'сотрудник', 'password7', 'active'),
-    ('employee8', 'сотрудник', 'password8', 'active'),
-    ('employee9', 'сотрудник', 'password9', 'active'),
-    ('employee10', 'сотрудник', 'password10', 'active');
+    ('employee1', 'сотрудник', 'password', 'active'),
+    ('employee2', 'сотрудник', 'password', 'active'),
+    ('employee3', 'сотрудник', 'password', 'active'),
+    ('employee4', 'сотрудник', 'password', 'active'),
+    ('employee5', 'сотрудник', 'password', 'active'),
+    ('employee6', 'сотрудник', 'password', 'active'),
+    ('employee7', 'сотрудник', 'password', 'active'),
+    ('employee8', 'сотрудник', 'password', 'active'),
+    ('employee9', 'сотрудник', 'password', 'active'),
+    ('employee10', 'сотрудник', 'password', 'active');
 
 -- Вставка сотрудников в таблицу staff для администраторов
 INSERT INTO staff (staff_id, surname, address, birthday, position, hire_date, department_id)
 VALUES
-    (1, 'Admin1', 'ул. Центральная, 1', '1980-05-10', 'Системный администратор', '2021-01-01', 1),
-    (2, 'Admin2', 'ул. Ленина, 2', '1975-03-22', 'Главный администратор', '2020-06-15', 2);
+    (1, 'Зуев', 'ул. Центральная, 1', '1980-05-10', 'Системный администратор', '2021-01-01', 1),
+    (2, 'Ермаков', 'ул. Ленина, 2', '1975-03-22', 'Главный администратор', '2020-06-15', 2);
 
 -- Вставка сотрудников в таблицу staff для руководителей
 INSERT INTO staff (staff_id, surname, address, birthday, position, hire_date, department_id)
 VALUES
-    (3, 'Management1', 'ул. Советская, 3', '1984-11-15', 'Руководитель отдела 1', '2022-07-10', 1),
-    (4, 'Management2', 'ул. Октябрьская, 4', '1990-02-20', 'Руководитель отдела 2', '2023-03-01', 2);
+    (3, 'Цветков', 'ул. Советская, 3', '1984-11-15', 'Руководитель отдела 1', '2022-07-10', 1),
+    (4, 'Кудрявцев', 'ул. Октябрьская, 4', '1990-02-20', 'Руководитель отдела 2', '2023-03-01', 2);
 
 -- Вставка сотрудников в таблицу staff для сотрудников
 INSERT INTO staff (staff_id, surname, address, birthday, position, hire_date, department_id)
 VALUES
-    (5, 'Employee1', 'ул. Ленина, 5', '1992-06-17', 'Менеджер', '2023-01-10', 1),
-    (6, 'Employee2', 'ул. Мира, 6', '1990-04-22', 'Инженер', '2022-11-14', 1),
-    (7, 'Employee3', 'ул. Победы, 7', '1985-11-05', 'Директор', '2021-03-01', 1),
-    (8, 'Employee4', 'ул. Московская, 8', '1987-07-30', 'Оперативник', '2022-06-20', 2),
-    (9, 'Employee5', 'ул. Куйбышева, 9', '1993-02-12', 'Бухгалтер', '2023-05-01', 2),
-    (10, 'Employee6', 'ул. Тверская, 10', '1989-08-14', 'Маркетолог', '2021-09-10', 2),
-    (11, 'Employee7', 'ул. Чапаева, 11', '1988-01-25', 'Аналитик', '2022-02-15', 3),
-    (12, 'Employee8', 'ул. Октябрьская, 12', '1995-10-30', 'Программист', '2023-08-05', 3),
-    (13, 'Employee9', 'ул. Строителей, 13', '1992-12-10', 'Менеджер', '2023-04-18', 3),
-    (14, 'Employee10', 'ул. Розы, 14', '1986-09-11', 'Юрист', '2021-12-15', 3);
+    (5, 'Иванова', 'ул. Ленина, 5', '1992-06-17', 'Менеджер', '2023-01-10', 1),
+    (6, 'Журавлева', 'ул. Мира, 6', '1990-04-22', 'Инженер', '2022-11-14', 1),
+    (7, 'Беляева', 'ул. Победы, 7', '1985-11-05', 'Директор', '2021-03-01', 1),
+    (8, 'Анисимова', 'ул. Московская, 8', '1987-07-30', 'Оперативник', '2022-06-20', 2),
+    (9, 'Симинова', 'ул. Куйбышева, 9', '1993-02-12', 'Бухгалтер', '2023-05-01', 2),
+    (10, 'Терехов', 'ул. Тверская, 10', '1989-08-14', 'Маркетолог', '2021-09-10', 2),
+    (11, 'Акимов', 'ул. Чапаева, 11', '1988-01-25', 'Аналитик', '2022-02-15', 3),
+    (12, 'Никитина', 'ул. Октябрьская, 12', '1995-10-30', 'Программист', '2023-08-05', 3),
+    (13, 'Лазарев', 'ул. Строителей, 13', '1992-12-10', 'Менеджер', '2023-04-18', 3),
+    (14, 'Попова', 'ул. Розы, 14', '1986-09-11', 'Юрист', '2021-12-15', 3);
 
 -- Вставка телефонов для администраторов
 INSERT INTO bcc (phone, money_limit, staff_id, status)
@@ -218,7 +216,7 @@ VALUES
     ('89051544135', 150.00, 10, 2024),  -- превышение для сотрудника 9
     ('89051544136', 200.00, 10, 2024);  -- превышение для сотрудника 10
 
-
+-- Выплаченные превышения
 INSERT INTO limit_exceed (phone, exceed_amount, exceed_month, exceed_year, repayment_date)
 VALUES
     ('89051544127', 50.00, 12, 2024, '2024-12-01'),   -- превышение для сотрудника 1
@@ -233,7 +231,6 @@ VALUES
     ('89051544136', 200.00, 12, 2024, '2024-12-30');  -- превышение для сотрудника 10
 
 SET foreign_key_checks = 1;
-
 
 DELIMITER $$
 
@@ -250,11 +247,10 @@ BEGIN
         FROM limit_exceed le
         JOIN bcc b ON le.phone = b.phone
         JOIN staff s ON b.staff_id = s.staff_id
-        WHERE le.exceed_month = p_month AND le.exceed_year = p_year
+        WHERE le.exceed_month = p_month AND le.exceed_year = p_year AND le.repayment_date IS NULL
         GROUP BY s.staff_id;
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
 
-    -- Открываем курсор для обработки данных
     OPEN report_cursor;
 
     read_loop: LOOP
@@ -263,26 +259,10 @@ BEGIN
             LEAVE read_loop;
         END IF;
 
-        -- Обновляем запись, если она существует
-        IF EXISTS (
-            SELECT 1 FROM exceed_report
-            WHERE staff_id = v_staff_id
-              AND report_month = p_month
-              AND report_year = p_year
-        ) THEN
-            UPDATE exceed_report
-            SET total_exceed_amount = v_total_exceed_amount
-            WHERE staff_id = v_staff_id
-              AND report_month = p_month
-              AND report_year = p_year;
-        ELSE
-            -- Вставляем новую запись, если она не существует
-            INSERT INTO exceed_report (staff_id, total_exceed_amount, report_month, report_year)
-            VALUES (v_staff_id, v_total_exceed_amount, p_month, p_year);
-        END IF;
+        INSERT INTO exceed_report (staff_id, total_exceed_amount, report_month, report_year)
+        VALUES (v_staff_id, v_total_exceed_amount, p_month, p_year);
     END LOOP;
 
-    -- Закрываем курсор
     CLOSE report_cursor;
 END$$
 
@@ -298,16 +278,11 @@ CREATE PROCEDURE create_paid_exceed_report(
 BEGIN
     DECLARE done INT DEFAULT 0;
     DECLARE v_staff_id INT;
-    DECLARE v_surname VARCHAR(100);
-    DECLARE v_department_id INT;
     DECLARE v_total_paid_amount DECIMAL(15, 2);
 
-    -- Курсор для выборки данных по выплаченным превышениям
     DECLARE report_cursor CURSOR FOR
         SELECT
             s.staff_id,
-            s.surname,
-            s.department_id,
             SUM(le.exceed_amount) AS total_paid_amount
         FROM limit_exceed le
         JOIN bcc b ON le.phone = b.phone
@@ -319,18 +294,17 @@ BEGIN
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
 
-    -- Открываем курсор
     OPEN report_cursor;
 
     read_loop: LOOP
-        FETCH report_cursor INTO v_staff_id, v_surname, v_department_id, v_total_paid_amount;
+        FETCH report_cursor INTO v_staff_id, v_total_paid_amount;
         IF done THEN
             LEAVE read_loop;
         END IF;
 
         -- Вставляем новую запись
-        INSERT INTO paid_exceed_report (staff_id, surname, department_id, total_paid_amount, report_month, report_year)
-        VALUES (v_staff_id, v_surname, v_department_id, v_total_paid_amount, p_month, p_year);
+        INSERT INTO paid_exceed_report (staff_id, total_paid_amount, report_month, report_year)
+        VALUES (v_staff_id, v_total_paid_amount, p_month, p_year);
     END LOOP;
 
     -- Закрываем курсор
@@ -358,18 +332,21 @@ CREATE PROCEDURE add_staff (
 BEGIN
     DECLARE v_user_id INT;
 
-    -- Вставляем данные в таблицу user
+    IF EXISTS (SELECT 1 FROM user WHERE login = p_login) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Error: Login already exists.';
+    END IF;
+
     INSERT INTO user (login, password, user_group, status)
-    VALUES (p_login, p_password, p_user_group, 'active')
-    ON DUPLICATE KEY UPDATE user_id = LAST_INSERT_ID(user_id);
+    VALUES (p_login, p_password, p_user_group, 'active');
 
     -- Получаем id пользователя
     SET v_user_id = LAST_INSERT_ID();
 
-    -- Вставляем данные в таблицу staff с user_id
     INSERT INTO staff (staff_id, surname, address, birthday, position, hire_date, department_id)
     VALUES (v_user_id, p_surname, p_address, p_birthday, p_position, p_hire_date, p_department_id);
 
 END //
 
 DELIMITER ;
+

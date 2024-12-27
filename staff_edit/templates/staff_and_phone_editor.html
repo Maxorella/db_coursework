@@ -73,9 +73,6 @@
             <button type="submit" class="button">Добавить телефон</button>
         </form>
 
-        <p><a href="{{ url_for('main_menu_handler') }}" class="button">В главное меню</a></p>
-
-
         <h1>Редактировать сотрудника:</h1>
         <form action="{{ url_for('editor_bp.edit_staff_handler', staff_id=staff_list_info[0][0]) }}" method="POST">
         <div>
@@ -104,6 +101,8 @@
         </div>
         <button type="submit" class="button">Сохранить изменения</button>
         </form>
+
+        <p><a href="{{ url_for('main_menu_handler') }}" class="button">В главное меню</a></p>
 
     </div>
 </body>
