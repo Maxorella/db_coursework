@@ -1,6 +1,6 @@
 SELECT
-    s.staff_id AS "Уникальный номер сотрудника",
     s.surname AS "Фамилия сотрудника",
+    s.department_id AS "Отдел",
     s.position AS "Должность",
     er.total_exceed_amount AS "Сумма превышения",
     er.report_month AS "Месяц превышения",

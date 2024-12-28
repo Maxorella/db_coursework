@@ -87,7 +87,7 @@ def query_staff_exceed_handler():
         staff_info, result, error = model_route_query_staff_exceed(conf, provider, surname, department_id)
 
         if error != '':
-            return redirect(url_for('query_bp.query_staff_exceed_handler', message=error))
+            return redirect(url_for('query_bp.query_menu_handler', message=error))
         else:
             return render_template("query_staff_exceed_result.html",
                                    staff=staff_info, staff_exceed=result, result=result)
