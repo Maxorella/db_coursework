@@ -8,6 +8,11 @@
 </head>
 <body>
     <div class="container">
+        {% if message %}
+        <div class="message">
+            <h1>{{ message }}</h1>
+        </div>
+        {% endif %}
         <h1>Все сотрудники:</h1>
             <table>
                 <thead>

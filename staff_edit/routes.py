@@ -23,10 +23,15 @@ def staff_menu_editor_handler():
 
     if request.method == 'GET':
         staff, schema, error = route_get_active_staff(provider, conf)
-        if error != '': #TODO
+        if error != '':
             return redirect(url_for('main_menu_handler', message=error))
 
-        return render_template('staff_menu.html',schema_list=schema, staff_list_list=staff)
+        message = request.args.get('message')
+        if message:
+            return render_template('staff_menu.html',schema_list=schema, staff_list_list=staff, message=message)
+        else:
+            return render_template('staff_menu.html',schema_list=schema, staff_list_list=staff)
+
 
 @editor_blueprint.route('/staff_phone_menu', methods=['GET'])
 @group_required
@@ -35,19 +40,17 @@ def staff_editor_handler():
     if request.method == 'GET':
         staff_id = int(request.args.get('staff_id'))
         staff_info, schema_staff, error = route_get_staff_by_id(provider, conf, staff_id)
-        if error != '': #TODO
-            return redirect(url_for('main_menu_handler', message=error))
+        if error != '':
+            return redirect(url_for('editor_bp.staff_menu_editor_handler', message=error))
 
         phones_list, schema_phone, error = route_get_phones_by_staff_id(provider, conf, staff_id)
-        if error != '': #TODO
-            return redirect(url_for('main_menu_handler', message=error))
+        if error != '':
+            return redirect(url_for('editor_bp.staff_menu_editor_handler', message=error))
 
+        message = request.args.get('message')
         return render_template('staff_and_phone_editor.html',
                                schema_staff_list=schema_staff, staff_list_info=staff_info,
-                               schema_phones_list=schema_phone, phones_list_list=phones_list)
-    # if request.method == 'POST':
-    #   pass
-        # Редактировать сотрудника
+                               schema_phones_list=schema_phone, phones_list_list=phones_list, message=message)
 
 @editor_blueprint.route('/delete_phone', methods=['POST'])
 @group_required
@@ -58,10 +61,10 @@ def delete_phone_handler():
         staff_id = int(request.args.get('staff_id'))
         phone = int(request.args.get('phone'))
         error = route_delete_phone(provider, conf, phone)
-        if error != '': #TODO
-            return redirect(url_for('main_menu_handler', message=error))
+        if error != '':
+            return redirect(url_for('editor_bp.staff_editor_handler', staff_id=staff_id, message=error))
 
-        return redirect(url_for('editor_bp.staff_editor_handler', staff_id=staff_id))  # TODO message
+        return redirect(url_for('editor_bp.staff_editor_handler', staff_id=staff_id, message='Телефон удален'))
 
 @editor_blueprint.route('/add_phone', methods=['POST'])
 @group_required
@@ -74,10 +77,10 @@ def add_phone_handler():
         money_limit = int(request.form.get('money_limit'))
         error = route_add_phone(provider, conf, staff_id, phone, money_limit)
 
-        if error != '': #TODO
-            return redirect(url_for('main_menu_handler', message=error))
+        if error != '':
+            return redirect(url_for('editor_bp.staff_editor_handler', staff_id=staff_id, message=error))
 
-        return redirect(url_for('editor_bp.staff_editor_handler', staff_id=staff_id))  # TODO message
+        return redirect(url_for('editor_bp.staff_editor_handler', staff_id=staff_id, message='Телефон создан!'))
 
 
 @editor_blueprint.route('/edit_staff', methods=['POST'])
@@ -96,13 +99,13 @@ def edit_staff_handler():
     error = route_edit_staff(provider, conf, staff_id, surname, address,
                                  birthday, position, hire_date, department_id)
 
-    if error != '': #TODO
-        return redirect(url_for('main_menu_handler', message=error))
+    if error != '':
+        return redirect(url_for('editor_bp.staff_editor_handler', message=error))
 
-    return redirect(url_for('editor_bp.staff_editor_handler', staff_id=staff_id))  # TODO message
+    return redirect(url_for('editor_bp.staff_editor_handler', staff_id=staff_id, message='Сотрудник отредактирован!'))
 
 
-@editor_blueprint.route('/delete_staff', methods=['GET','POST'])
+@editor_blueprint.route('/delete_staff', methods=['GET', 'POST'])
 @group_required
 def delete_staff_handler():
     conf = current_app.config['db_config']
@@ -110,10 +113,10 @@ def delete_staff_handler():
     staff_id = int(request.args.get('staff_id'))
     error = route_delete_staff(provider, conf, staff_id)
 
-    if error != '': #TODO
-        return redirect(url_for('main_menu_handler', message=error))
+    if error != '':
+        return redirect(url_for('editor_bp.staff_menu_editor_handler', message=error))
 
-    return redirect(url_for('editor_bp.staff_editor_handler', staff_id=staff_id))  # TODO message
+    return redirect(url_for('editor_bp.staff_menu_editor_handler', message='Сотрудник удален!'))
 
 
 @editor_blueprint.route('/create_staff', methods=['POST'])
@@ -133,7 +136,7 @@ def create_staff_handler():
     error = route_add_staff(provider, conf, login, password, user_group, surname, address, birthday, position,
                             hire_date, department_id)
 
-    if error != '':  # TODO
-        return redirect(url_for('main_menu_handler', message=error))
+    if error != '':
+        return redirect(url_for('editor_bp.staff_menu_editor_handler', message=error))
 
-    return redirect(url_for('editor_bp.staff_menu_editor_handler'))  # TODO message
+    return redirect(url_for('editor_bp.staff_menu_editor_handler', message='Сотрудник создан!'))
